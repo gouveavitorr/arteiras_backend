@@ -1,3 +1,3 @@
-import { stores } from "./store.routes";
+import { stores } from "./stores.routes";
 
 export { stores };
