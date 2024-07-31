@@ -7,16 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  expires      DateTime
-  clientId     String?
-  adminId      String
-  admin        Admin    @relation(fields: [adminId], references: [id])
-  client       Client?  @relation(fields: [clientId], references: [id])
-}
-
 model Product {
   id          String   @id @default(cuid())
   name        String
@@ -73,7 +63,6 @@ model Client {
   phoneNumber String    @unique
   address     String
   orders      Order[]
-  sessions    Session[]
 }
 
 model Admin {
@@ -81,7 +70,6 @@ model Admin {
   name     String    @unique
   email    String    @unique
   password String
-  sessions Session[]
 }
 
 model Order {
