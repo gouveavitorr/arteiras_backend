@@ -58,10 +58,10 @@ export class ClientsUsecases {
   }
 
   async delete(id: string): Promise<void> {
-    const client = await this.clientRepository.findById(id)
+    const client = await this.clientRepository.findById(id);
 
-    if(!client) {
-        throw new Error("Nonexistent id")
+    if (!client) {
+      throw new Error("Nonexistent id");
     }
     await this.clientRepository.delete(id);
   }
