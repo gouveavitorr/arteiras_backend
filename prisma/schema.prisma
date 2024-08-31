@@ -12,19 +12,23 @@ model Product {
   name        String
   price       Float
   description String
+  images      Image[]
+  weight      Float
+  size        Float
   quantity    Int
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  images      Image[]
-  storeId     String?
-  store       Store?      @relation(fields: [storeId], references: [id])
-  OrderItem   OrderItem[]
+  storeId     String
+  store       Store       @relation(fields: [storeId], references: [id])
+  OrderItem   OrderItem[] //por que o orderItem tá aqui?
+  categories  Category[]
 }
 
 model Category {
-  id     String  @id @default(cuid())
-  name   String
-  stores Store[] @relation("CategoryToStore")
+  id       String    @id @default(cuid())
+  name     String
+  stores   Store[]   @relation("CategoryToStore")
+  products Product[]
 }
 
 model Image {
@@ -38,12 +42,14 @@ model Store {
   id          String     @id @default(cuid())
   name        String     @unique
   description String
-  owner       String
+  seller      Seller     @relation(fields: [sellerId], references: [id])
+  sellerId    String     @unique
   phoneNumber String?    @unique
   instagramId String?    @unique
   facebookId  String?    @unique
   products    Product[]
   categories  Category[] @relation("CategoryToStore")
+  orders      Order[]
 }
 
 model Seller {
@@ -51,17 +57,44 @@ model Seller {
   name        String @unique
   cpf         String @unique
   phoneNumber String @unique
+  Store       Store? //um deles precisa existir sem o outro pra não criar um paradoxo?
 }
 
-model Client {
-  id          String  @id @default(cuid())
-  name        String  @unique
-  email       String  @unique
-  cpf         String  @unique
-  password    String
-  phoneNumber String  @unique
-  address     String
-  orders      Order[]
+model Customer {
+  id             String          @id @default(cuid())
+  name           String          @unique
+  email          String          @unique
+  cpf            String          @unique
+  password       String //precisamos criptografar a senha
+  phoneNumber    String          @unique
+  orders         Order[]
+  address        Address[]
+  paymentMethods PaymentMethod[]
+}
+
+model Address {
+  id           String   @id @default(cuid())
+  street       String
+  number       String
+  neighborhood String
+  city         String
+  state        String
+  country      String
+  postalCode   String
+  recipient    String
+  reference    String
+  customer     Customer @relation(fields: [customerId], references: [id])
+  customerId   String
+  orders       Order[]
+}
+
+model PaymentMethod {
+  id         String   @id @default(cuid())
+  type       String
+  cardInfo   String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId String
+  orders     Order[]
 }
 
 model Admin {
@@ -72,17 +105,21 @@ model Admin {
 }
 
 model Order {
-  id               String      @id @default(cuid())
-  address          String?
+  id               String         @id @default(cuid())
+  orderItems       OrderItem[]
   totalAmount      Float
   deliveryExpenses Float
   orderStatus      orderStatus
   trackingCode     String
-  payment          Boolean
-  clientId         String
-  createdAt        DateTime    @default(now())
-  orderItems       OrderItem[]
-  client           Client      @relation(fields: [clientId], references: [id])
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  customer         Customer       @relation(fields: [customerId], references: [id])
+  customerId       String
+  address          Address?       @relation(fields: [addressId], references: [id])
+  addressId        String?
+  paymentMethod    PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
+  paymentMethodId  String?
+  stores           Store[]
 }
 
 model OrderItem {
