@@ -22,14 +22,14 @@ export class StoresRepositoryPrisma implements StoreRepository {
   }
 
   async create(data: StoreCreate): Promise<Store> {
-    const { name, description, owner, phoneNumber, instagramId, facebookId } =
+    const { name, description, sellerId, phoneNumber, instagramId, facebookId } =
       data;
     const store = await prisma.store.create({
       data: {
         name,
         description,
-        owner,
         phoneNumber,
+        sellerId,
         instagramId,
         facebookId,
       },
@@ -38,7 +38,7 @@ export class StoresRepositoryPrisma implements StoreRepository {
   }
 
   async update(id: string, data: StoreUpdate): Promise<Store | null> {
-    const { name, description, owner, phoneNumber, instagramId, facebookId } =
+    const { name, description, sellerId, phoneNumber, instagramId, facebookId } =
       data;
     const store = await prisma.store.findUnique({
       where: {
@@ -52,7 +52,7 @@ export class StoresRepositoryPrisma implements StoreRepository {
       data: {
         name: name || store?.name,
         description: description || store?.description,
-        owner: owner || store?.owner,
+        sellerId: sellerId || store?.sellerId,
         phoneNumber: phoneNumber || store?.phoneNumber,
         instagramId: instagramId || store?.instagramId,
         facebookId: facebookId || store?.facebookId,

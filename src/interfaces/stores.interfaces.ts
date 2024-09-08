@@ -2,7 +2,7 @@ export interface Store {
   id: string;
   name: string;
   description: string;
-  owner: string;
+  sellerId: string;
   phoneNumber: string | null;
   instagramId: string | null;
   facebookId: string | null;
@@ -13,7 +13,7 @@ export interface Store {
 export interface StoreCreate {
   name: string;
   description: string;
-  owner: string;
+  sellerId: string;
   phoneNumber: string | null;
   instagramId: string | null;
   facebookId: string | null;
@@ -22,7 +22,7 @@ export interface StoreCreate {
 export interface StoreUpdate {
   name?: string;
   description?: string;
-  owner?: string;
+  sellerId?: string;
   phoneNumber?: string;
   instagramId?: string;
   facebookId?: string;

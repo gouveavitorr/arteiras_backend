@@ -41,6 +41,8 @@ export class ProductsRepositoryPrisma implements ProductRepository {
         name: data.name,
         price: data.price,
         description: data.description,
+        weight: data.weight,
+        size: data.size,
         quantity: data.quantity,
       },
     });
@@ -48,7 +50,7 @@ export class ProductsRepositoryPrisma implements ProductRepository {
   }
 
   async update(id: string, data: ProductUpdate): Promise<Product | null> {
-    const { name, price, description, quantity } = data;
+    const { name, price, description, weight, size, quantity } = data;
 
     const product = await prisma.product.findUnique({
       where: { id },
@@ -60,6 +62,8 @@ export class ProductsRepositoryPrisma implements ProductRepository {
         name: name || product?.name,
         price: price || product?.price,
         description: description || product?.description,
+        weight: weight || product?.weight,
+        size: size || product?.size,
         quantity: quantity || product?.quantity,
       },
     });

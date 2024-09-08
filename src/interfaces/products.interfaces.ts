@@ -5,6 +5,8 @@ export interface Product {
     name: string;
     price: number;
     description: string;
+    weight: number;
+    size: number;
     quantity: number;
     createdAt: Date;
     updatedAt: Date;
@@ -19,6 +21,8 @@ export interface Product {
     name: string;
     price: number;
     description: string;
+    weight: number;
+    size: number;
     quantity: number;
     // storeId: string;
     // images: string[];
@@ -30,6 +34,8 @@ export interface Product {
     name?: string;
     price?: number;
     description?: string;
+    weight?: number;
+    size?: number;
     quantity?: number;
     // storeId?: string;
     // images?: string[];

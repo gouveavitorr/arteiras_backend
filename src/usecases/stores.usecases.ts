@@ -27,13 +27,13 @@ export class StoresUsecases {
   }
 
   async create(data: StoreCreate): Promise<Store> {
-    const { name, description, owner, phoneNumber, instagramId, facebookId } =
+    const { name, description, sellerId, phoneNumber, instagramId, facebookId } =
       data;
 
     const store = await this.storeRepository.create({
       name,
       description,
-      owner,
+      sellerId,
       phoneNumber,
       instagramId,
       facebookId,
@@ -43,19 +43,19 @@ export class StoresUsecases {
   }
 
   async update(id: string, data: StoreUpdate): Promise<Store | null> {
-    const { name, description, owner, phoneNumber, instagramId, facebookId } =
+    const { name, description, sellerId, phoneNumber, instagramId, facebookId } =
       data;
 
-    const store = await this.storeRepository.update(id, {
+    const updatedStore = await this.storeRepository.update(id, {
       name,
       description,
-      owner,
+      sellerId,
       phoneNumber,
       instagramId,
       facebookId,
     });
 
-    return store;
+    return updatedStore;
   }
 
   async delete(id: string): Promise<void> {
