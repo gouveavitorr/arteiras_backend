@@ -2,6 +2,29 @@
 CREATE TYPE "orderStatus" AS ENUM ('PENDING_CART', 'WAITING_PAYMENT', 'CANCELLED', 'READY_TO_SEND', 'IN_TRANSPORT', 'CONCLUDED');
 
 -- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "role" TEXT NOT NULL,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Customer" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "cpf" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "phoneNumber" TEXT NOT NULL,
+
+    CONSTRAINT "Customer_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Product" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -39,6 +62,7 @@ CREATE TABLE "Store" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
+    "image" TEXT NOT NULL,
     "sellerId" TEXT NOT NULL,
     "phoneNumber" TEXT,
     "instagramId" TEXT,
@@ -55,18 +79,6 @@ CREATE TABLE "Seller" (
     "phoneNumber" TEXT NOT NULL,
 
     CONSTRAINT "Seller_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Customer" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "cpf" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "phoneNumber" TEXT NOT NULL,
-
-    CONSTRAINT "Customer_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -90,20 +102,9 @@ CREATE TABLE "Address" (
 CREATE TABLE "PaymentMethod" (
     "id" TEXT NOT NULL,
     "type" TEXT NOT NULL,
-    "cardInfo" TEXT NOT NULL,
     "customerId" TEXT NOT NULL,
 
     CONSTRAINT "PaymentMethod_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Admin" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-
-    CONSTRAINT "Admin_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -151,6 +152,18 @@ CREATE TABLE "_OrderToStore" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Customer_name_key" ON "Customer"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Customer_email_key" ON "Customer"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Customer_cpf_key" ON "Customer"("cpf");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Customer_phoneNumber_key" ON "Customer"("phoneNumber");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Store_name_key" ON "Store"("name");
 
 -- CreateIndex
@@ -173,24 +186,6 @@ CREATE UNIQUE INDEX "Seller_cpf_key" ON "Seller"("cpf");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Seller_phoneNumber_key" ON "Seller"("phoneNumber");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Customer_name_key" ON "Customer"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Customer_email_key" ON "Customer"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Customer_cpf_key" ON "Customer"("cpf");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Customer_phoneNumber_key" ON "Customer"("phoneNumber");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Admin_name_key" ON "Admin"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_CategoryToStore_AB_unique" ON "_CategoryToStore"("A", "B");

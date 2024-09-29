@@ -1,4 +1,6 @@
-//import store & order typings
+import { Store } from "./stores.interfaces"
+import { Order } from "./orders.interfaces"
+import {Image } from "./images.interfaces"
 
 export interface Product {
     id: string;
@@ -10,11 +12,11 @@ export interface Product {
     quantity: number;
     createdAt: Date;
     updatedAt: Date;
-    // storeId: string;
-    // orderId: any;
-    // store: any;
-    // order: JSON | null;
-    // images: string[];
+    storeId: string;
+    orderId: string;
+    store: Store;
+    order: Order | null;
+    images: Image[];
   }
   
   export interface ProductCreate {
@@ -24,10 +26,9 @@ export interface Product {
     weight: number;
     size: number;
     quantity: number;
-    // storeId: string;
-    // images: string[];
-    // order: JSON(?);
-    //store: JSON(?);
+    storeId: string;
+    images: Image[];
+    orderId: string;
   }
   
   export interface ProductUpdate {
@@ -37,9 +38,7 @@ export interface Product {
     weight?: number;
     size?: number;
     quantity?: number;
-    // storeId?: string;
-    // images?: string[];
-    //store?: JSON(?);
+    images?: Image[];
   }
   
   export interface ProductRepository {

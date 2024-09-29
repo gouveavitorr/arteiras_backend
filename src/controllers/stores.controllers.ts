@@ -1,4 +1,3 @@
-import { Store, StoreCreate, StoreRepository, StoreUpdate } from "../interfaces/stores.interfaces";
 import { StoresUsecases } from "../usecases/stores.usecases";
 
 const storesUseCases = new StoresUsecases();
@@ -15,10 +14,11 @@ export class StoresController {
     }
 
     async create(req: any, reply: any) {
-        const { name, description, sellerId, phoneNumber, instagramId, facebookId } = req.body
+        const { name, description, image, sellerId, phoneNumber, instagramId, facebookId } = req.body
         const store = await storesUseCases.create({
             name,
             description,
+            image,
             sellerId,
             phoneNumber,
             instagramId,
@@ -29,10 +29,11 @@ export class StoresController {
 
     async update(req: any, reply: any) {
         const { id } = req.params
-        const { name, description, sellerId, phoneNumber, instagramId, facebookId } = req.body
+        const { name, description, image, sellerId, phoneNumber, instagramId, facebookId } = req.body
         const store = await storesUseCases.update(id, {
             name, 
             description,
+            image,
             sellerId,
             phoneNumber,
             instagramId,

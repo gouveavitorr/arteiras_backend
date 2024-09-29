@@ -1,18 +1,22 @@
+import { Product } from "./products.interfaces";
+import { Category } from "./categories.interfaces"
 export interface Store {
   id: string;
   name: string;
+  image: string;
   description: string;
   sellerId: string;
   phoneNumber: string | null;
   instagramId: string | null;
   facebookId: string | null;
-  //products
-  //categories
+  products: Product[];
+  categories: Category[];
 }
 
 export interface StoreCreate {
   name: string;
   description: string;
+  image: string;
   sellerId: string;
   phoneNumber: string | null;
   instagramId: string | null;
@@ -22,6 +26,7 @@ export interface StoreCreate {
 export interface StoreUpdate {
   name?: string;
   description?: string;
+  image?: string;
   sellerId?: string;
   phoneNumber?: string;
   instagramId?: string;
