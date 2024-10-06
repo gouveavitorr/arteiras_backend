@@ -13,9 +13,9 @@ export interface Product {
     createdAt: Date;
     updatedAt: Date;
     storeId: string;
-    orderId: string;
-    store: Store;
-    order: Order | null;
+    orderId?: string;
+    // store: Store;
+    // order: Order | null;
     images: Image[];
   }
   

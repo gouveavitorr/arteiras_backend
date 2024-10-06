@@ -1,3 +1,8 @@
-import {Product, ProductCreate, ProductUpdate, ProductRepository} from "../interfaces/products.interfaces";
+import {
+  Product,
+  ProductCreate,
+  ProductUpdate,
+  ProductRepository,
+} from "../interfaces/products.interfaces";
 
-import {Products}
+// import {Products}

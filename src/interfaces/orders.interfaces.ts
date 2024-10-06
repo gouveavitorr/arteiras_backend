@@ -14,7 +14,7 @@ export interface Order {
     createdAt: Date;
     updatedAt: Date;
     customerId: string;
-    customer: Customer;
+    // customer: Customer;
     addressId: string;
     address: Address;
     paymentMethodId?: string;
@@ -43,7 +43,7 @@ export interface OrderUpdate {
     createdAt?: Date;
     updatedAt?: Date;
     customerId?: string;
-    customer?: Customer;
+    // customer?: Customer;
     addressId?: string;
     address?: Address;
     paymentMethodId?: string;

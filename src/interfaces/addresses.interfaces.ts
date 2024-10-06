@@ -13,7 +13,7 @@ export interface Address {
     recipient: string;
     reference: string;
     customerId: string;
-    customer: Customer;
+    // customer: Customer;
     orders: Order[];
 }
 

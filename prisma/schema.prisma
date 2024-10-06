@@ -8,23 +8,23 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(cuid())
+  id       String    @id @default(cuid())
   name     String
   email    String
   password String
   role     String
+  Customer Customer?
 }
 
 model Customer {
   id             String          @id @default(cuid())
-  name           String          @unique
-  email          String          @unique
   cpf            String          @unique
-  password       String //precisamos criptografar a senha
   phoneNumber    String          @unique
   orders         Order[]
   address        Address[]
   paymentMethods PaymentMethod[]
+  userId         String          @unique
+  user           User            @relation(fields: [userId], references: [id])
 }
 
 model Product {
@@ -74,11 +74,11 @@ model Store {
 }
 
 model Seller {
-  id          String @id @default(cuid())
-  name        String @unique
-  cpf         String @unique
-  phoneNumber String @unique
-  Store       Store? //um deles precisa existir sem o outro pra não criar um paradoxo?
+  id          String  @id @default(cuid())
+  name        String  @unique
+  cpf         String  @unique
+  phoneNumber String  @unique
+  Store       Store?
 }
 
 model Address {
