@@ -29,8 +29,8 @@ export const updateCustomerProfile = async (customerId: string, data) => {
     const updatedCustomer = await prisma.customer.update({
       where: { id: customerId },
       data: {
-        cpf: data?.cpf,
-        phoneNumber: data?.phoneNumber,
+        cpf: data?.cpf || customer.cpf,
+        phoneNumber: data?.phoneNumber || customer.phoneNumber,
       },
     });
     if (!updatedCustomer) {

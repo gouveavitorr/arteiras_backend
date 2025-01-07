@@ -13,7 +13,8 @@ model User {
   email    String
   password String
   role     String
-  Customer Customer?
+  customerId String? @unique
+  customer Customer? @relation(fields: [customerId], references: [id])
 }
 
 model Customer {
@@ -23,8 +24,7 @@ model Customer {
   orders         Order[]
   address        Address[]
   paymentMethods PaymentMethod[]
-  userId         String          @unique
-  user           User            @relation(fields: [userId], references: [id])
+  user User?  @relation
 }
 
 model Product {
