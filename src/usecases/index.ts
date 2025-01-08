@@ -15,9 +15,10 @@ Product Listing & Details
     GET /products – aqui a gente pode incluir paginação (quantidade de itens enviados por vez na requisição, tipo products/?=1, e outras coisas como filtragem pela slug)
     GET /products/:productId
 
-Product Categories
+Categories
     GET /categories
     GET /categories/:categoryId/products – produtos em categoria(s) específica(s)
+    GET/categories/:categoryId/stores - lojas com categorias específicas
 
 Store Information
     GET /stores – (filtros na slug opcionais, mas acho que não faz sentido)
