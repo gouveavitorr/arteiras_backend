@@ -12,7 +12,7 @@ export const getCategories = async () => {
 
 export const getProductsByCategory = async (categoryId: string) => {
     try {
-        const category = await prisma.category.findUnique({
+        const category = await prisma.category.findFirst({
             where: {
                 id: categoryId
             }
@@ -21,7 +21,7 @@ export const getProductsByCategory = async (categoryId: string) => {
         if (!category) {
             throw new Error("Categoria não encontrada.")
         }
-
+        console.log(category)
         const products = await prisma.product.findMany({
             where: {
                 categories: {
@@ -41,7 +41,7 @@ export const getProductsByCategory = async (categoryId: string) => {
 
 export const getStoresByCategory = async (categoryId: string) => {
     try {
-        const category = await prisma.category.findUnique({
+        const category = await prisma.category.findFirst({
             where: {
                 id: categoryId
             }

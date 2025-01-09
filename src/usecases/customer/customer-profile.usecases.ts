@@ -6,11 +6,16 @@ export const getCustomerProfile = async (customerId: string) => {
       where: {
         id: customerId,
       },
+      include: {
+        address: true,
+        paymentMethods: true,
+      }
     });
     if (!customer) {
       throw new Error("Cliente não encontrado");
     }
-    return customer;
+    return customer
+
   } catch (error) {
     throw new Error(`Erro ao buscar perfil: ${error.message}`);
   }

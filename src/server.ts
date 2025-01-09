@@ -1,7 +1,7 @@
-import Fastify, { FastifyInstance } from "fastify";
+import { FastifyInstance, fastify } from "fastify";
 import { customerProfile, productListing, categories, stores } from "../src/routes/customer/customer.routes"
 
-const app: FastifyInstance = Fastify();
+export const app: FastifyInstance = fastify();
 
 app.register(customerProfile)
 app.register(productListing)

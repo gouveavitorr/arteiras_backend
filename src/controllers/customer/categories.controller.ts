@@ -8,14 +8,14 @@ export class CategoriesController {
     }
 
     async getProductsByCategory(req: FastifyRequest, reply: FastifyReply) {
-        const { id }: any = req.params
-        const products = await getProductsByCategory(id) 
+        const { categoryId }: any = req.params
+        const products = await getProductsByCategory(categoryId) 
         return reply.code(200).send(products)
     }
 
     async getStoresByCategory(req: FastifyRequest, reply: FastifyReply) {
-        const { id }: any = req.params
-        const stores = await getStoresByCategory(id)
+        const { categoryId }: any = req.params
+        const stores = await getStoresByCategory(categoryId)
         return reply.code(200).send(stores)
     }
 }

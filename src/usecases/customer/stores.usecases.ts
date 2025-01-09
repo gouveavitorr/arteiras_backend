@@ -12,7 +12,7 @@ export const getStores = async () => {
 
 export const getStore = async (storeId: string) => {
     try {
-        const store = await prisma.store.findUnique({
+        const store = await prisma.store.findFirst({
             where: {
                 id: storeId
             }

@@ -23,7 +23,7 @@ export async function productListing(app: FastifyInstance) {
 export async function categories(app: FastifyInstance) {
   app.get("/categories", categoriesController.getCategories)
   app.get("/categories/:categoryId/products", categoriesController.getProductsByCategory)
-  app.get("categories/:categoryId/stores", categoriesController.getStoresByCategory)
+  app.get("/categories/:categoryId/stores", categoriesController.getStoresByCategory)
 }
 
 export async function stores(app: FastifyInstance) {

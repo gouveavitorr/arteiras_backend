@@ -8,8 +8,8 @@ export class StoresController {
     }
 
     async getStore(req: FastifyRequest, reply: FastifyReply){
-        const { id }: any = req.params;
-        const store = await getStore(id);
+        const { storeId }: any = req.params;
+        const store = await getStore(storeId);
 
         return reply.code(200).send(store);
     }
