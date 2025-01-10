@@ -12,8 +12,8 @@ model User {
   name       String
   email      String
   password   String
-  role       String
   customerId String?   @unique
+  role       Role      @default(CUSTOMER)
   customer   Customer? @relation(fields: [customerId], references: [id])
 }
 
@@ -21,10 +21,11 @@ model Customer {
   id             String          @id @default(cuid())
   cpf            String          @unique
   phoneNumber    String          @unique
+  addresses      Address[]
+  cartItems      CartItem?
   orders         Order[]
-  address        Address[]
   paymentMethods PaymentMethod[]
-  user           User?           @relation
+  user           User?
 }
 
 model Product {
@@ -32,23 +33,24 @@ model Product {
   name        String
   price       Float
   description String
-  images      Image[]
   weight      Float
   size        Float
   quantity    Int
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   storeId     String
+  cartItems   CartItem[]
+  images      Image[]
+  OrderItems  OrderItem[]
   store       Store       @relation(fields: [storeId], references: [id])
-  OrderItem   OrderItem[] //por que o orderItem tá aqui?
-  categories  Category[]
+  categories  Category[]  @relation("CategoryToProduct")
 }
 
 model Category {
   id       String    @id @default(cuid())
   name     String
-  stores   Store[]
-  products Product[]
+  products Product[] @relation("CategoryToProduct")
+  stores   Store[]   @relation("CategoryToStore")
 }
 
 model Image {
@@ -63,14 +65,14 @@ model Store {
   name        String     @unique
   description String
   image       String
-  seller      Seller     @relation(fields: [sellerId], references: [id])
   sellerId    String     @unique
   phoneNumber String?    @unique
   instagramId String?    @unique
   facebookId  String?    @unique
   products    Product[]
-  categories  Category[]
-  orders      Order[]
+  seller      Seller     @relation(fields: [sellerId], references: [id])
+  categories  Category[] @relation("CategoryToStore")
+  orders      Order[]    @relation("OrderToStore")
 }
 
 model Seller {
@@ -92,35 +94,46 @@ model Address {
   postalCode   String
   recipient    String
   reference    String
-  customer     Customer @relation(fields: [customerId], references: [id])
   customerId   String
+  customer     Customer @relation(fields: [customerId], references: [id])
   orders       Order[]
 }
 
 model PaymentMethod {
   id         String   @id @default(cuid())
   type       String
-  customer   Customer @relation(fields: [customerId], references: [id])
   customerId String
   orders     Order[]
+  customer   Customer @relation(fields: [customerId], references: [id])
+}
+
+model CartItem {
+  id         String   @id @default(cuid())
+  customerId String   @unique
+  productId  String
+  quantity   Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  customer   Customer @relation(fields: [customerId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id])
 }
 
 model Order {
   id               String         @id @default(cuid())
-  orderItems       OrderItem[]
   totalAmount      Float
   deliveryExpenses Float
   orderStatus      orderStatus
   trackingCode     String
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
-  customer         Customer       @relation(fields: [customerId], references: [id])
   customerId       String
-  address          Address?       @relation(fields: [addressId], references: [id])
   addressId        String?
-  paymentMethod    PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
   paymentMethodId  String?
-  stores           Store[]
+  address          Address?       @relation(fields: [addressId], references: [id])
+  customer         Customer       @relation(fields: [customerId], references: [id])
+  paymentMethod    PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
+  orderItems       OrderItem[]
+  stores           Store[]        @relation("OrderToStore")
 }
 
 model OrderItem {
@@ -130,6 +143,11 @@ model OrderItem {
   orderId   String
   order     Order   @relation(fields: [orderId], references: [id])
   product   Product @relation(fields: [productId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
 }
 
 enum orderStatus {
