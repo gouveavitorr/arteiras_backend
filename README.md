@@ -22,7 +22,7 @@
     GET /stores – (filtros na slug opcionais, mas acho que não faz sentido)
     GET /stores/:storeId
 
-[] Cart Operations
+[✅] Cart Operations
     POST /cart/add – pending cart
     PUT /cart/update – atualizar qtd de produtos
     DELETE /cart/remove/:productId - remover um item só
@@ -32,7 +32,7 @@
 [] Checkout
     POST /checkout – Processo de checkout (gerar uma order com base no carrinho, calcular total, custo de entrega etc)
 
-[] Order Management
+[✅] Order Management
     GET /orders – pedidos do usuário logado
     GET /orders/:orderId
 
