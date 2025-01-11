@@ -22,7 +22,7 @@ model Customer {
   cpf            String          @unique
   phoneNumber    String          @unique
   addresses      Address[]
-  cartItems      CartItem?
+  cartItems      CartItem[]
   orders         Order[]
   paymentMethods PaymentMethod[]
   user           User?
@@ -109,7 +109,7 @@ model PaymentMethod {
 
 model CartItem {
   id         String   @id @default(cuid())
-  customerId String   @unique
+  customerId String 
   productId  String
   quantity   Int
   createdAt  DateTime @default(now())

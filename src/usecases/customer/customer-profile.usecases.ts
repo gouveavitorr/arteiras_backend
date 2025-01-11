@@ -2,12 +2,12 @@ import { prisma } from "../../lib/prisma";
 
 export const getCustomerProfile = async (customerId: string) => {
   try {
-    const customer = await prisma.customer.findUnique({
+    const customer = await prisma.customer.findFirst({
       where: {
         id: customerId,
       },
       include: {
-        address: true,
+        addresses: true,
         paymentMethods: true,
       }
     });

@@ -13,6 +13,7 @@ export const addItemToCart = async (data: CartItemRequest) => {
                 id: data.productId
             }
         })
+
         if (!product) {
             throw new Error("Produto não encontrado.")
         }
@@ -22,19 +23,41 @@ export const addItemToCart = async (data: CartItemRequest) => {
                 id: data.customerId
             }
         })
+
         if (!customer) {
             throw new Error("Usuário não encontrado.")
         }
 
-        const item = await prisma.cartItem.create({
-            data: {
-                productId: product.id,
-                customerId: customer.id,
-                quantity: data.quantity
+        const cartItemExists = await prisma.cartItem.findFirst({
+            where: {
+                productId: data.productId,
+                customerId: data.customerId
             }
         })
 
-        return item
+        if (cartItemExists) {
+            const updatedItem = await prisma.cartItem.update({
+                where: {
+                    id: cartItemExists.id
+                },
+                data: {
+                    productId: data?.productId || cartItemExists.productId,
+                    customerId: data?.customerId || cartItemExists.customerId,
+                    quantity: data.quantity += cartItemExists.quantity
+                }
+            })
+            return updatedItem
+        } else {
+            const item = await prisma.cartItem.create({
+                data: {
+                    productId: data.productId,
+                    customerId: data.customerId,
+                    quantity: data.quantity
+                }
+            })
+            return item
+        }
+
     } catch (error) {
         throw new Error(`Erro: ${error.message}`)
     }
