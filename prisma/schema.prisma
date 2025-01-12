@@ -7,13 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
+}
+
 model User {
   id         String    @id @default(cuid())
   name       String
-  email      String
+  email      String    @unique
   password   String
   customerId String?   @unique
   role       Role      @default(CUSTOMER)
+  sessions   Session[]
   customer   Customer? @relation(fields: [customerId], references: [id])
 }
 
@@ -109,7 +118,7 @@ model PaymentMethod {
 
 model CartItem {
   id         String   @id @default(cuid())
-  customerId String 
+  customerId String
   productId  String
   quantity   Int
   createdAt  DateTime @default(now())

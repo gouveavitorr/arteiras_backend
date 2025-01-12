@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/prisma";
 
 export const getCustomerProfile = async (customerId: string) => {
-  try {
+
     const customer = await prisma.customer.findFirst({
       where: {
         id: customerId,
@@ -16,13 +16,10 @@ export const getCustomerProfile = async (customerId: string) => {
     }
     return customer
 
-  } catch (error) {
-    throw new Error(`Erro ao buscar perfil: ${error.message}`);
-  }
 };
 
 export const updateCustomerProfile = async (customerId: string, data) => {
-  try {
+
     const customer = await prisma.customer.findUnique({
       where: {
         id: customerId,
@@ -42,13 +39,11 @@ export const updateCustomerProfile = async (customerId: string, data) => {
       throw new Error("Falha ao atualizar cliente");
     }
     return updatedCustomer;
-  } catch (error) {
-    throw new Error(`Erro ao realizar operação: ${error.message}`);
-  }
+
 };
 
 export const getCustomerOrders = async (customerId: string) => {
-  try {
+
     const verifiedCustomerId = await prisma.customer.findUnique({
       where: {
         id: customerId,
@@ -63,7 +58,5 @@ export const getCustomerOrders = async (customerId: string) => {
       throw new Error("Nenhum pedido encontrado para esse cliente");
     }
     return orders;
-  } catch (error) {
-    throw new Error(`Erro ao buscar pedidos desse cliente: ${error.message}`);
-  }
+
 };

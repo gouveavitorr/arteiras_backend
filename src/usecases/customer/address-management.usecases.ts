@@ -14,7 +14,6 @@ export interface AddressRequest {
 }
 
 export const addNewAddress = async (data: AddressRequest) => {
-    try {
         const customer = await prisma.customer.findFirst({
             where: {
                 id: data.customerId
@@ -40,14 +39,9 @@ export const addNewAddress = async (data: AddressRequest) => {
             }
         })
         return address
-
-    } catch (error) {
-        throw new Error(`Erro: ${error.message}`)
-    }
 }
 
 export const showAddresses = async (id: string) => {
-    try {
         const customer = await prisma.customer.findFirst({
             where: {
                 id
@@ -65,14 +59,9 @@ export const showAddresses = async (id: string) => {
         })
 
         return addresses
-        
-    } catch (error) {
-        throw new Error(`Erro: ${error.message}`)
-    }
 }
 
 export const editAddress = async (id: string, data) => {
-    try {
         const address = await prisma.address.findFirst({
             where: {
                 id
@@ -101,20 +90,12 @@ export const editAddress = async (id: string, data) => {
         })
 
         return updatedAddress
-
-    } catch (error) {
-        throw new Error(`Erro: ${error.message}`)
-    }
 }
 
 export const deleteAddress = async (id: string) => {
-    try {
         const address = await prisma.address.delete({
             where: {
                 id
             }
         })
-    } catch (error) {
-        throw new Error(`Erro: ${error.message}`)
-    }
 }

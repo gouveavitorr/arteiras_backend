@@ -1,5 +1,6 @@
 import { FastifyInstance, fastify } from "fastify";
 import { customerProfile, productListing, categories, stores, cartOperations } from "../src/routes/customer/customer.routes"
+import { user } from "./routes/user.routes"
 
 export const app: FastifyInstance = fastify();
 
@@ -8,6 +9,7 @@ app.register(productListing)
 app.register(categories)
 app.register(stores)
 app.register(cartOperations)
+app.register(user)
 
 app.listen({ port: 8080 }, function (err, address) {
   if (err) {

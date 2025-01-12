@@ -1,17 +1,14 @@
 import { prisma } from "../../lib/prisma"
 
 export const getCategories = async () => {
-    try {
+
         const categories = await prisma.category.findMany()
         return categories
         
-    } catch (error){
-        throw new Error(`Erro: ${error.message}`)
-    }
 }
 
 export const getProductsByCategory = async (categoryId: string) => {
-    try {
+
         const category = await prisma.category.findFirst({
             where: {
                 id: categoryId
@@ -34,13 +31,10 @@ export const getProductsByCategory = async (categoryId: string) => {
 
         return products
         
-    } catch (error){
-        throw new Error(`Erro: ${error.message}`)
-    }
 }
 
 export const getStoresByCategory = async (categoryId: string) => {
-    try {
+
         const category = await prisma.category.findFirst({
             where: {
                 id: categoryId
@@ -63,7 +57,4 @@ export const getStoresByCategory = async (categoryId: string) => {
 
         return stores
         
-    } catch (error){
-        throw new Error(`Erro: ${error.message}`)
-    }
 }

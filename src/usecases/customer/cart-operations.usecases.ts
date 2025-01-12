@@ -7,7 +7,7 @@ export interface CartItemRequest {
 }
 
 export const addItemToCart = async (data: CartItemRequest) => {
-    try {
+
         const product = await prisma.product.findFirst({
             where: {
                 id: data.productId
@@ -58,25 +58,19 @@ export const addItemToCart = async (data: CartItemRequest) => {
             return item
         }
 
-    } catch (error) {
-        throw new Error(`Erro: ${error.message}`)
-    }
 }
 
 export const deleteItemFromCart = async (id: string) => {
-    try {
+
         const item = await prisma.cartItem.delete({
             where: {
                 id
             }
         })
-    } catch (error) {
-        throw new Error(`Erro: ${error.message}`)
-    }
 }
 
 export const removeOneItemFromCart = async(id: string) => {
-    try {
+
         const item = await prisma.cartItem.findFirst({
             where: {
                 id
@@ -89,13 +83,10 @@ export const removeOneItemFromCart = async(id: string) => {
         if (item.quantity > 0) {
             item.quantity--
         } 
-    } catch (error) {
-        throw new Error(`Erro: ${error.message}`)
-    }
 }
 
 export const clearCart = async(id: string) => {
-    try {
+
         const customer = await prisma.customer.findFirst({
             where: {
                 id
@@ -114,14 +105,10 @@ export const clearCart = async(id: string) => {
         for (let i = 0; i <= (await showCartItems(customer.id)).length; i++) { //pensar um jeito mais eficiente
             deleteItemFromCart(item[i].id)
         }
-
-    } catch (error) {
-        throw new Error(`Erro: ${error.message}`)
-    }
 }
 
 export const showCartItems = async (id: string) => {
-    try {
+
         const customer = await prisma.customer.findFirst({
             where: {
                 id
@@ -133,13 +120,10 @@ export const showCartItems = async (id: string) => {
             }
         })
         return items
-    } catch (error) {
-        throw new Error(`Erro: ${error.message}`)
-    }
 }
 
 export const showUniqueCartItem = async (id: string) => {
-    try {
+
         const item = await prisma.cartItem.findFirst({
             where: {
                 id
@@ -149,7 +133,5 @@ export const showUniqueCartItem = async (id: string) => {
             throw new Error("Produto não encontrado.")
         }
         return item
-    } catch (error) {
-        throw new Error(`Erro: ${error.message}`)
-    }
+
 }

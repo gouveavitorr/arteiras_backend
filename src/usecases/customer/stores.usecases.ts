@@ -1,17 +1,15 @@
 import { prisma } from "../../lib/prisma"
 
 export const getStores = async () => {
-    try {
+
         const stores = await prisma.store.findMany()
         
         return stores
-    } catch (error) {
-        throw new Error(`Erro: ${error.message}`)
-    }
+
 }
 
 export const getStore = async (storeId: string) => {
-    try {
+
         const store = await prisma.store.findFirst({
             where: {
                 id: storeId
@@ -22,7 +20,5 @@ export const getStore = async (storeId: string) => {
         }
 
         return store
-    } catch (error) {
-        throw new Error(`Erro: ${error.message}`)
-    }
+
 }
