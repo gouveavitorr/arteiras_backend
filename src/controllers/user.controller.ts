@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify"
-import { signup, edit } from "../usecases/user.usercases"
+import { signup, edit, signin } from "../usecases/user.usercases"
 
 export class UserController {
     async create(req: FastifyRequest, reply: FastifyReply) {
@@ -20,6 +20,16 @@ export class UserController {
             const user = await edit(id, { name, email, old_password, password })
             return reply.code(200).send(user)
             
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
+        }
+    }
+
+    async login(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const { email, password }: any = req.body
+            const user = await signin({ email, password })
+            return reply.code(200).send(user)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }

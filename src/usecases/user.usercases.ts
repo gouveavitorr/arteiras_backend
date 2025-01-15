@@ -1,3 +1,4 @@
+import { sign } from "../configs/jwt";
 import { prisma } from "../lib/prisma";
 import argon2 from "argon2"
 
@@ -12,6 +13,11 @@ export interface UserEditRequest {
     email?: string,
     password?: string,
     old_password?: string
+}
+
+export interface userSignin {
+    email: string,
+    password: string
 }
 
 export const signup = async (data: UserSignupRequest) => {
@@ -82,4 +88,30 @@ export const edit = async (id: string, data: UserEditRequest) => {
         }
     })
     return updatedUser
+}
+
+export const signin = async (data: userSignin) => {
+    const user = await prisma.user.findFirst({
+        where: {
+            email: data.email
+        }
+    })
+
+    if (!user) {
+        throw new Error("Email e/ou senha incorretos.")
+    }
+
+    const isSamePassword = await argon2.verify(user.password, data.password)
+
+    if (!isSamePassword) {
+        throw new Error("Email e/ou senha incorretos.")
+    }
+
+    const token = await sign({
+        id: user.id,
+        name: user.name,
+        email: user.email
+    })
+
+    return {user, token}
 }
