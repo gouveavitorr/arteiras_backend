@@ -109,8 +109,10 @@ export const signin = async (data: userSignin) => {
 
     const token = await sign({
         id: user.id,
+        customerId: user.customerId,
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role
     })
 
     return {user, token}

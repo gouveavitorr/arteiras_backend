@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { verify } from "../configs/jwt";
 
-export async function isAuthenticated(req: FastifyRequest, reply: FastifyReply) {
+export async function isAuthenticated(req: any, reply: FastifyReply) {
     const rawToken = req.headers.authorization
     if (!rawToken) {
         throw new Error("Invalid token")
@@ -10,6 +10,9 @@ export async function isAuthenticated(req: FastifyRequest, reply: FastifyReply) 
     const accessToken = tokenParts?.[1]
 
     const payload = await verify(accessToken)
+    console.log(payload)
+
+    req.user = payload
 
     if (!payload) {
         throw new Error("Invalid token")

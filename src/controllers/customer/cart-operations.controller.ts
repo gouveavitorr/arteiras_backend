@@ -3,8 +3,9 @@ import { addItemToCart, showUniqueCartItem, showCartItems, removeOneItemFromCart
 
 export class CartOperationsController {
     async addItem(req: FastifyRequest, reply: FastifyReply) {
-        const { productId, customerId, quantity }: any = req.body
-        const item = await addItemToCart({ productId, customerId, quantity })
+        const { id } = req.user
+        const { productId, quantity }: any = req.body
+        const item = await addItemToCart({ productId, customerId: id, quantity })
         return reply.code(200).send(item)
     }
 
@@ -26,14 +27,15 @@ export class CartOperationsController {
     }
 
     async clearCart(req: FastifyRequest, reply: FastifyReply) {
-        const { customerId }: any = req.params
-        const cartDeleted = await clearCart(customerId)
+        const { id } = req.user
+        const cartDeleted = await clearCart(id)
         return reply.code(200).send("Carrinho vazio.")
     }
 
     async showItems(req: FastifyRequest, reply: FastifyReply) {
-        const { customerId }: any = req.params
-        const items = await showCartItems(customerId)
+        const { id } = req.user
+        console.log(id)
+        const items = await showCartItems(id)
         return reply.code(200).send(items)
     }
 }
