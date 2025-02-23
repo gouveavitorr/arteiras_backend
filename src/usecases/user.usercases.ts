@@ -15,7 +15,7 @@ export interface UserEditRequest {
     old_password?: string
 }
 
-export interface userSignin {
+export interface userSignIn {
     email: string,
     password: string
 }
@@ -68,6 +68,7 @@ export const edit = async (id: string, data: UserEditRequest) => {
     }
 
     if (data.password && data.old_password) {
+        console.log(user.name)
         const checkOldPassword = await argon2.verify(user.password, data.old_password)
 
         if(checkOldPassword) {
@@ -90,7 +91,7 @@ export const edit = async (id: string, data: UserEditRequest) => {
     return updatedUser
 }
 
-export const signin = async (data: userSignin) => {
+export const signin = async (data: userSignIn) => {
     const user = await prisma.user.findFirst({
         where: {
             email: data.email

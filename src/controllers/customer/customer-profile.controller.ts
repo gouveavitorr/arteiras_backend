@@ -4,19 +4,19 @@ import { updateCustomerProfile, getCustomerProfile, getCustomerOrders } from "..
 export class CustomerProfileController {
 
   async getProfile(req: FastifyRequest, reply: FastifyReply) {
-    const { customerId }: any = req.params;
-    const profile = await getCustomerProfile(customerId);
+    const { id }: any = req.user;
+    const profile = await getCustomerProfile(id);
     return reply.code(200).send(profile);
   }
 
   async updateProfile(req: FastifyRequest, reply: FastifyReply) {
-    const { customerId }: any = req.params;
+    const { id }: any = req.user;
     const { cpf, phoneNumber }: any = req.body;
 
     //verificar cpf (limpeza de string)
     //verificar phoneNumber
 
-    const updatedCustomer = await updateCustomerProfile(customerId, {
+    const updatedCustomer = await updateCustomerProfile(id, {
       cpf,
       phoneNumber,
     });
@@ -25,8 +25,8 @@ export class CustomerProfileController {
   }
 
   async getOrders(req: FastifyRequest, reply: FastifyReply) {
-    const { customerId }: any = req.params;
-    const orders = await getCustomerOrders(customerId);
+    const { id }: any = req.user;
+    const orders = await getCustomerOrders(id);
     return reply.code(200).send(orders);
   }
 }

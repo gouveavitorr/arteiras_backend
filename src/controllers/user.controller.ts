@@ -16,7 +16,8 @@ export class UserController {
 
     async update(req: FastifyRequest, reply: FastifyReply) {
         try {
-            const { id, name, email, old_password, password }: any = req.body
+            const { id } = req.user
+            const { name, email, old_password, password }: any = req.body
             const user = await edit(id, { name, email, old_password, password })
             return reply.code(200).send(user)
             

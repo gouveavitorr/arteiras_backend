@@ -1,8 +1,8 @@
 [] User Signup/Login
-    POST /auth/signup
-    POST /auth/login
-    POST /auth/logout
-    GET /auth/me – pegar o perfil
+    [✅] POST /auth/signup 
+    [✅] POST /auth/login
+    []POST /auth/logout
+    [✅] GET /auth/me – pegar o perfil 
 
 [✅] Customer Profile
     GET /customers/:customerId – pegar o perfil de comprador
