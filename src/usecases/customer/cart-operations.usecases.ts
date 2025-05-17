@@ -2,7 +2,7 @@ import { prisma } from "../../lib/prisma"
 
 export interface CartItemRequest {
     productId: string,
-    customerId: string,
+    userId: string,
     quantity: number
 }
 
@@ -20,7 +20,7 @@ export const addItemToCart = async (data: CartItemRequest) => {
 
         const customer = await prisma.customer.findFirst({
             where: {
-                id: data.customerId
+                id: data.userId
             }
         })
 
@@ -31,7 +31,7 @@ export const addItemToCart = async (data: CartItemRequest) => {
         const cartItemExists = await prisma.cartItem.findFirst({
             where: {
                 productId: data.productId,
-                customerId: data.customerId
+                userId: data.userId
             }
         })
 
@@ -42,7 +42,7 @@ export const addItemToCart = async (data: CartItemRequest) => {
                 },
                 data: {
                     productId: data?.productId || cartItemExists.productId,
-                    customerId: data?.customerId || cartItemExists.customerId,
+                    userId: data?.userId || cartItemExists.userId,
                     quantity: data.quantity += cartItemExists.quantity
                 }
             })
@@ -51,7 +51,7 @@ export const addItemToCart = async (data: CartItemRequest) => {
             const item = await prisma.cartItem.create({
                 data: {
                     productId: data.productId,
-                    customerId: data.customerId,
+                    userId: data.userId,
                     quantity: data.quantity
                 }
             })
@@ -98,11 +98,11 @@ export const clearCart = async(id: string) => {
         }
         const item = await prisma.cartItem.findMany({
             where: {
-                customerId: customer.id
+                userId: user.id
             }
         })
         
-        for (let i = 0; i <= (await showCartItems(customer.id)).length; i++) { //pensar um jeito mais eficiente
+        for (let i = 0; i <= (await showCartItems(user.id)).length; i++) { //TODO: pensar um jeito mais eficiente
             deleteItemFromCart(item[i].id)
         }
 }
@@ -116,7 +116,7 @@ export const showCartItems = async (id: string) => {
         })
         const items = await prisma.cartItem.findMany({
             where: {
-                customerId: customer?.id
+                userId: user?.id
             }
         })
         return items

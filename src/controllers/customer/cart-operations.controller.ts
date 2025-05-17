@@ -5,7 +5,7 @@ export class CartOperationsController {
     async addItem(req: FastifyRequest, reply: FastifyReply) {
         const { id } = req.user
         const { productId, quantity }: any = req.body
-        const item = await addItemToCart({ productId, customerId: id, quantity })
+        const item = await addItemToCart({ productId, userId: id, quantity })
         return reply.code(200).send(item)
     }
 
