@@ -2,6 +2,7 @@ import { sign } from "../configs/jwt";
 import { prisma } from "../lib/prisma";
 import argon2 from "argon2"
 
+
 export interface UserSignupRequest {
     name: string,
     email: string,
@@ -15,7 +16,7 @@ export interface UserEditRequest {
     old_password?: string
 }
 
-export interface userSignIn {
+export interface UserSignIn {
     email: string,
     password: string
 }
@@ -110,7 +111,7 @@ export const signin = async (data: userSignIn) => {
 
     const token = await sign({
         id: user.id,
-        customerId: user.customerId,
+        userId: user.userId,
         name: user.name,
         email: user.email,
         role: user.role

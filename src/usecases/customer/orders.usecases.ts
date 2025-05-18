@@ -14,7 +14,7 @@ export const getOrders = async (userId: string) => {
 
     const orders = await prisma.order.findMany({
         where: {
-            customerId: userId
+            userId: userId
         }
     })
     return orders
@@ -35,7 +35,7 @@ export const getOrder = async (userId: string, orderId: string) => {
     const order = await prisma.order.findFirst({
         where: {
             id: orderId,
-            customerId: userId
+            userId: userId
         }
     })
 

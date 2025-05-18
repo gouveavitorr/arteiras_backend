@@ -16,9 +16,9 @@ const cart = new CartOperationsController()
 const order = new OrdersController()
 
 export async function customerProfile(app: FastifyInstance) {
-  app.get("/customers", { preHandler: isAuthenticated }, customer.getProfile);
-  app.put("/customers", { preHandler: isAuthenticated }, customer.updateProfile)
-  app.get("/customers/orders", { preHandler: isAuthenticated }, customer.getOrders)
+  app.get("/customer", { preHandler: isAuthenticated }, customer.getProfile)
+  app.put("/customer", { preHandler: isAuthenticated }, customer.updateProfile)
+  app.get("/customer/orders", { preHandler: isAuthenticated }, customer.getOrders)
 }
 
 export async function productListing(app: FastifyInstance) {

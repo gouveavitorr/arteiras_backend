@@ -1,10 +1,10 @@
 import { prisma } from "../../lib/prisma";
 
-export const getCustomerProfile = async (customerId: string) => {
+export const getCustomerProfile = async (userId: string) => {
 
     const customer = await prisma.customer.findFirst({
       where: {
-        id: customerId,
+        id: userId,
       },
       include: {
         addresses: true,
@@ -18,18 +18,18 @@ export const getCustomerProfile = async (customerId: string) => {
 
 };
 
-export const updateCustomerProfile = async (customerId: string, data) => {
+export const updateCustomerProfile = async (userId: string, data) => {
 
     const customer = await prisma.customer.findUnique({
       where: {
-        id: customerId,
+        id: userId,
       },
     });
     if (!customer) {
       throw new Error("Cliente não encontrado");
     }
     const updatedCustomer = await prisma.customer.update({
-      where: { id: customerId },
+      where: { id: userId },
       data: {
         cpf: data?.cpf || customer.cpf,
         phoneNumber: data?.phoneNumber || customer.phoneNumber,
@@ -42,16 +42,16 @@ export const updateCustomerProfile = async (customerId: string, data) => {
 
 };
 
-export const getCustomerOrders = async (customerId: string) => {
+export const getCustomerOrders = async (userId: string) => {
 
-    const verifiedCustomerId = await prisma.customer.findUnique({
+    const verifieduserId = await prisma.customer.findUnique({
       where: {
-        id: customerId,
+        id: userId,
       },
     });
     const orders = await prisma.order.findMany({
       where: {
-        customerId: verifiedCustomerId?.id,
+        userId: verifieduserId?.id,
       },
     });
     if (!orders || orders.length === 0) {

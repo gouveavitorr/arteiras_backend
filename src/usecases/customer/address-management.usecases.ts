@@ -10,13 +10,13 @@ export interface AddressRequest {
     postalCode: string,
     recipient: string,
     reference: string,
-    customerId: string,
+    userId: string,
 }
 
 export const addNewAddress = async (data: AddressRequest) => {
         const customer = await prisma.customer.findFirst({
             where: {
-                id: data.customerId
+                id: data.userId
             }
         })
 
@@ -35,7 +35,7 @@ export const addNewAddress = async (data: AddressRequest) => {
                 postalCode: data.postalCode,
                 recipient: data.recipient,
                 reference: data?.reference,
-                customerId: customer.id
+                userId: user.id
             }
         })
         return address
@@ -54,7 +54,7 @@ export const showAddresses = async (id: string) => {
 
         const addresses = await prisma.address.findMany({
             where: {
-                customerId: customer.id
+                userId: user.id
             }
         })
 

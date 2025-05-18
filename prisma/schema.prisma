@@ -7,34 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id])
-}
-
 model User {
-  id         String    @id @default(cuid())
-  name       String
-  email      String    @unique
-  password   String
-  customerId String?   @unique
-  role       Role      @default(CUSTOMER)
-  sessions   Session[]
-  customer   Customer? @relation(fields: [customerId], references: [id])
-}
-
-model Customer {
   id             String          @id @default(cuid())
-  cpf            String          @unique
-  phoneNumber    String          @unique
+  name           String
+  email          String          @unique
+  password       String
+  role           Role            @default(CUSTOMER)
+  cpf            String?         @unique
+  phoneNumber    String?         @unique
   addresses      Address[]
   cartItems      CartItem[]
   orders         Order[]
   paymentMethods PaymentMethod[]
-  user           User?
 }
 
 model Product {
@@ -93,7 +77,7 @@ model Seller {
 }
 
 model Address {
-  id           String   @id @default(cuid())
+  id           String  @id @default(cuid())
   street       String
   number       String
   neighborhood String?
@@ -103,28 +87,28 @@ model Address {
   postalCode   String
   recipient    String
   reference    String?
-  customerId   String
-  customer     Customer @relation(fields: [customerId], references: [id])
+  userId       String
+  user         User    @relation(fields: [userId], references: [id])
   orders       Order[]
 }
 
 model PaymentMethod {
-  id         String   @id @default(cuid())
-  type       String
-  customerId String
-  orders     Order[]
-  customer   Customer @relation(fields: [customerId], references: [id])
+  id     String  @id @default(cuid())
+  type   String
+  userId String
+  orders Order[]
+  user   User    @relation(fields: [userId], references: [id])
 }
 
 model CartItem {
-  id         String   @id @default(cuid())
-  customerId String
-  productId  String
-  quantity   Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  customer   Customer @relation(fields: [customerId], references: [id])
-  product    Product  @relation(fields: [productId], references: [id])
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
 }
 
 model Order {
@@ -135,11 +119,11 @@ model Order {
   trackingCode     String
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
-  customerId       String
+  userId           String
   addressId        String?
   paymentMethodId  String?
   address          Address?       @relation(fields: [addressId], references: [id])
-  customer         Customer       @relation(fields: [customerId], references: [id])
+  user             User           @relation(fields: [userId], references: [id])
   paymentMethod    PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
   orderItems       OrderItem[]
   stores           Store[]        @relation("OrderToStore")
