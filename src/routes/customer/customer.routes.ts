@@ -1,6 +1,5 @@
 //colocar todas as rotas do lado do cliente aqui
 import { FastifyInstance } from "fastify";
-import { CustomerProfileController } from "../../controllers/customer/customer-profile.controller";
 import { ProductListingController } from "../../controllers/customer/product-listing.controller";
 import { CategoriesController } from "../../controllers/customer/categories.controller";
 import { StoresController } from "../../controllers/customer/stores.controller";
@@ -8,18 +7,11 @@ import { CartOperationsController } from "../../controllers/customer/cart-operat
 import { OrdersController } from "../../controllers/customer/orders.controller"
 import { isAuthenticated } from "../../middlewares/isAuthenticated";
 
-const customer = new CustomerProfileController()
 const product = new ProductListingController()
 const category = new CategoriesController()
 const store = new StoresController()
 const cart = new CartOperationsController()
 const order = new OrdersController()
-
-export async function customerProfile(app: FastifyInstance) {
-  app.get("/customer", { preHandler: isAuthenticated }, customer.getProfile)
-  app.put("/customer", { preHandler: isAuthenticated }, customer.updateProfile)
-  app.get("/customer/orders", { preHandler: isAuthenticated }, customer.getOrders)
-}
 
 export async function productListing(app: FastifyInstance) {
     app.get("/products", product.getProducts)

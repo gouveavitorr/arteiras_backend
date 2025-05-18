@@ -16,12 +16,17 @@ export interface UserEditRequest {
     old_password?: string
 }
 
-export interface UserSignIn {
+export interface UserSignInRequest {
     email: string,
     password: string
 }
 
-export const signup = async (data: UserSignupRequest) => {
+export interface UserUpdateProfileRequest {
+    cpf: string,
+    phoneNumber: string
+}
+
+export const signUp = async (data: UserSignupRequest) => {
     const checkIfUserExists = await prisma.user.findFirst({
         where: {
             email: data.email
@@ -69,7 +74,6 @@ export const edit = async (id: string, data: UserEditRequest) => {
     }
 
     if (data.password && data.old_password) {
-        console.log(user.name)
         const checkOldPassword = await argon2.verify(user.password, data.old_password)
 
         if(checkOldPassword) {
@@ -92,7 +96,7 @@ export const edit = async (id: string, data: UserEditRequest) => {
     return updatedUser
 }
 
-export const signin = async (data: userSignIn) => {
+export const signIn = async (data: UserSignInRequest) => {
     const user = await prisma.user.findFirst({
         where: {
             email: data.email
@@ -111,11 +115,75 @@ export const signin = async (data: userSignIn) => {
 
     const token = await sign({
         id: user.id,
-        userId: user.userId,
+        userId: user.id,
         name: user.name,
         email: user.email,
         role: user.role
     })
 
     return {user, token}
+}
+
+export const getUserProfile = async (id: string) => {
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        addresses: true,
+        paymentMethods: true,
+      }
+    })
+    if (!user) {
+      throw new Error("Usuário não encontrado");
+    }
+    return user
+
+}
+
+export const updateUserProfile = async (id: string, data: UserUpdateProfileRequest) => {
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    })
+    if (!user) {
+      throw new Error("Usuário não encontrado");
+    }
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: {
+        cpf: data?.cpf || user.cpf,
+        phoneNumber: data?.phoneNumber || user.phoneNumber,
+      },
+    })
+    if (!updatedUser) {
+      throw new Error("Falha ao atualizar usuário");
+    }
+    return updatedUser;
+
+}
+
+export const getUserOrders = async (id: string) => {
+
+    const verifiedUserId = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    })
+    const orders = await prisma.order.findMany({
+      where: {
+        userId: verifiedUserId?.id,
+      },
+    })
+    if (verifiedUserId?.role == "CUSTOMER" && !orders || orders.length === 0) {
+      throw new Error("Nenhum pedido encontrado para esse cliente")
+    }
+    if(verifiedUserId?.role == "ADMIN"){
+        throw new Error("Este usuário é admin e não pode possuir pedidos")
+    }
+    return orders
+
 }

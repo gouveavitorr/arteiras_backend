@@ -18,13 +18,13 @@ export const addItemToCart = async (data: CartItemRequest) => {
             throw new Error("Produto não encontrado.")
         }
 
-        const customer = await prisma.customer.findFirst({
+        const user = await prisma.user.findFirst({
             where: {
                 id: data.userId
             }
         })
 
-        if (!customer) {
+        if (!user) {
             throw new Error("Usuário não encontrado.")
         }
 
@@ -87,13 +87,13 @@ export const removeOneItemFromCart = async(id: string) => {
 
 export const clearCart = async(id: string) => {
 
-        const customer = await prisma.customer.findFirst({
+        const user = await prisma.user.findFirst({
             where: {
                 id
             }
         })
 
-        if(!customer) {
+        if(!user) {
             throw new Error("Cliente não encontrado.")
         }
         const item = await prisma.cartItem.findMany({
@@ -109,7 +109,7 @@ export const clearCart = async(id: string) => {
 
 export const showCartItems = async (id: string) => {
 
-        const customer = await prisma.customer.findFirst({
+        const user = await prisma.user.findFirst({
             where: {
                 id
             }

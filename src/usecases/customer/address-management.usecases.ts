@@ -13,15 +13,28 @@ export interface AddressRequest {
     userId: string,
 }
 
+export interface EditAddressInterface {
+    street: string,
+    number: string,
+    neighborhood: string,
+    city: string,
+    state: string,
+    country: string,
+    postalCode: string,
+    recipient: string,
+    reference: string,
+    userId: string,
+}
+
 export const addNewAddress = async (data: AddressRequest) => {
-        const customer = await prisma.customer.findFirst({
+        const user = await prisma.user.findFirst({
             where: {
                 id: data.userId
             }
         })
 
-        if (!customer) {
-            throw new Error("Cliente não encontrado.")
+        if (!user) {
+            throw new Error("Usuário não encontrado.")
         }
 
         const address = await prisma.address.create({
@@ -42,14 +55,14 @@ export const addNewAddress = async (data: AddressRequest) => {
 }
 
 export const showAddresses = async (id: string) => {
-        const customer = await prisma.customer.findFirst({
+        const user = await prisma.user.findFirst({
             where: {
                 id
             }
         })
 
-        if (!customer) {
-            throw new Error("Cliente não encontrado.")
+        if (!user) {
+            throw new Error("Usuário não encontrado.")
         }
 
         const addresses = await prisma.address.findMany({
@@ -61,7 +74,7 @@ export const showAddresses = async (id: string) => {
         return addresses
 }
 
-export const editAddress = async (id: string, data) => {
+export const editAddress = async (id: string, data: EditAddressInterface) => {
         const address = await prisma.address.findFirst({
             where: {
                 id

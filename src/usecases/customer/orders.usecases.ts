@@ -1,10 +1,10 @@
 import {prisma } from "../../lib/prisma"
 
-export const getOrders = async (userId: string) => {
+export const getOrders = async (id: string) => {
 
     const user = await prisma.user.findFirst({
         where: {
-            id: userId
+            id
         }
     })
 
@@ -14,17 +14,17 @@ export const getOrders = async (userId: string) => {
 
     const orders = await prisma.order.findMany({
         where: {
-            userId: userId
+            userId: id
         }
     })
     return orders
 }
 
-export const getOrder = async (userId: string, orderId: string) => {
+export const getOrder = async (id: string, orderId: string) => {
 
     const user = await prisma.user.findFirst({
         where: {
-            id: userId
+            id
         }
     })
 
@@ -35,7 +35,7 @@ export const getOrder = async (userId: string, orderId: string) => {
     const order = await prisma.order.findFirst({
         where: {
             id: orderId,
-            userId: userId
+            userId: id
         }
     })
 

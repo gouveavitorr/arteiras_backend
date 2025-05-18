@@ -1,13 +1,14 @@
 import { FastifyRequest, FastifyReply } from "fastify"
-import { signup, edit, signin } from "../usecases/user.usercases"
-import { UserSignupRequest, UserSignIn, UserEditRequest } from "../schemas/users"
+import { signUp, edit, signIn, getUserProfile, updateUserProfile, getUserOrders } from "../usecases/user.usecases"
+import { UserSignupRequest, UserSignInRequest, UserEditRequest,   } from "../schemas/users"
+import { CPF } from "../utils/cpf"
 
 export class UserController {
     async create(req: FastifyRequest, reply: FastifyReply) {
         try {
             UserSignupRequest.parse(req.body)
             const { name, email, password }: any = req.body
-            const user = await signup({ name, email, password })
+            const user = await signUp({ name, email, password })
 
             return reply.code(200).send(user)
 
@@ -32,12 +33,51 @@ export class UserController {
 
     async login(req: FastifyRequest, reply: FastifyReply) {
         try {
-            UserSignIn.parse(req.body)
+            UserSignInRequest.parse(req.body)
             const { email, password }: any = req.body
-            const user = await signin({ email, password })
+            const user = await signIn({ email, password })
             return reply.code(200).send(user)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }
+    }
+
+    async getProfile(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            //parse req
+            const { id }: any = req.user
+            const profile = await getUserProfile(id)
+            return reply.code(200).send(profile)
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
+        }
+    }
+
+    async updateProfile(req: FastifyRequest, reply: FastifyReply) {
+        
+        try {
+            const { id }: any = req.user
+            const { cpf, phoneNumber }: any = req.body
+
+            const verifiedCpf = new CPF(cpf)
+            //como fazer pra lidar com cpf ou phoneNumber 
+            //verificar phoneNumber
+            const updatedUser = await updateUserProfile(id, {
+                cpf: verifiedCpf.toString(),
+                phoneNumber,
+            })
+
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
+        }
+        
+        
+        return reply.code(200).send(updateUserProfile)
+    }
+
+    async getOrders(req: FastifyRequest, reply: FastifyReply) {
+        const { id }: any = req.user
+        const orders = await getUserOrders(id)
+        return reply.code(200).send(orders)
     }
 }

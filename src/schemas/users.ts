@@ -14,7 +14,8 @@ export const UserEditRequest = z.object({
     old_password: z.string().min(8).max(50).nullable()
 })
 
-export const UserSignIn = z.object({
+export const UserSignInRequest = z.object({
     email: z.string().email(),
     password: z.string().min(8).max(50)
 })
+

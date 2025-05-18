@@ -1,3 +1,9 @@
+NEXT TASKS:
+    - Como implementar o processo de "esqueci a senha"
+    - Classes utilitárias de CPF, phoneNumber, address etc para tratamento de dados
+    - ID na URL e o resto no body - dependendo da entidade
+    - 
+
 [] User Signup/Login
     [✅] POST /auth/signup 
     [✅] POST /auth/login
