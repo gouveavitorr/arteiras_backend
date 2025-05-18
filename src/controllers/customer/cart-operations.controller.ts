@@ -34,7 +34,6 @@ export class CartOperationsController {
 
     async showItems(req: FastifyRequest, reply: FastifyReply) {
         const { id } = req.user
-        console.log(id)
         const items = await showCartItems(id)
         return reply.code(200).send(items)
     }

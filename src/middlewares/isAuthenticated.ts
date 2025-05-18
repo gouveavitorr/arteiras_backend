@@ -10,7 +10,6 @@ export async function isAuthenticated(req: any, reply: FastifyReply) {
     const accessToken = tokenParts?.[1]
 
     const payload = await verify(accessToken)
-    console.log(payload)
 
     req.user = payload
 

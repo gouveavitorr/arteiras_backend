@@ -18,7 +18,6 @@ export const getProductsByCategory = async (categoryId: string) => {
         if (!category) {
             throw new Error("Categoria não encontrada.")
         }
-        console.log(category)
         const products = await prisma.product.findMany({
             where: {
                 categories: {
