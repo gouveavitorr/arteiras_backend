@@ -1,17 +1,20 @@
 import { FastifyInstance, fastify } from "fastify";
-import { customerProfile, productListing, categories, stores, cartOperations } from "../src/routes/customer/customer.routes"
+import { ProductsRoute, CartRoute, OrdersRoute, StoresRoute, CategoriesRoute } from "./routes/customer"
 import { user } from "./routes/user.routes"
 
 export const app: FastifyInstance = fastify();
 
-app.register(customerProfile)
-app.register(productListing)
-app.register(categories)
-app.register(stores)
-app.register(cartOperations)
+// app.register(customerProfile)
+app.register(ProductsRoute.productListing)
+app.register(CategoriesRoute.categories)
+app.register(StoresRoute.stores)
+app.register(CartRoute.cartOperations)
 app.register(user)
 
-app.listen({ port: 8080 }, function (err, address) {
+const port = process.env.PORT as unknown as number
+const host = process.env.HOST as string
+
+app.listen({ host: host, port: port }, function(err, address) {
   if (err) {
     app.log.error(err);
     process.exit(1);
