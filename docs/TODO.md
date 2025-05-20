@@ -2,7 +2,8 @@
     - Como implementar o processo de "esqueci a senha"
     - Classes utilitárias de CPF, phoneNumber, address etc para tratamento de dados
     - ID na URL e o resto no body - dependendo da entidade
-    - adicionar um logger middleware
+
+- [x] Adicionar logger
 
 - [ ] User Signup/Login
     - [x] `POST` - `/auth/signup`
@@ -59,5 +60,3 @@
 
 - [ ] Order Tracking
     - [ ] `GET` - `/orders/:orderId/tracking` – tracking info
-
-
