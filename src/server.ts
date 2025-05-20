@@ -1,8 +1,19 @@
 import { FastifyInstance, fastify } from "fastify";
-import { ProductsRoute, CartRoute, OrdersRoute, StoresRoute, CategoriesRoute } from "./routes/customer"
+import { ProductsRoute, CartRoute, /*OrdersRoute,*/ StoresRoute, CategoriesRoute } from "./routes/customer"
 import { user } from "./routes/user.routes"
 
-export const app: FastifyInstance = fastify();
+export const app: FastifyInstance = fastify({
+  logger: {
+    serializers: {
+      req: function(req) {
+        return {
+          url: req.url,
+          method: req.method
+        }
+      }
+    }
+  }
+});
 
 // app.register(customerProfile)
 app.register(ProductsRoute.productListing)
@@ -14,10 +25,10 @@ app.register(user)
 const port = process.env.PORT as unknown as number
 const host = process.env.HOST as string
 
-app.listen({ host: host, port: port }, function(err, address) {
+app.listen({ host, port }, function(err) {
   if (err) {
     app.log.error(err);
     process.exit(1);
   }
-  console.log(`Server is now listening on ${address}`);
+  console.log(`Server is now listening on http://${host}:${port}`);
 });
