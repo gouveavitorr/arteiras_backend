@@ -1,0 +1,5 @@
+export * as CartRoute from "./cart.routes"
+export * as OrdersRoute from "./orders.routes"
+export * as StoresRoute from "./stores.routes"
+export * as ProductsRoute from "./products.routes"
+export * as CategoriesRoute from "./categories.routes"
