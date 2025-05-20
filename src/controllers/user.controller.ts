@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 import { signUp, edit, signIn, getUserProfile, updateUserProfile, getUserOrders } from "../usecases/user.usecases"
-import { UserSignupRequest, UserSignInRequest, UserEditRequest,   } from "../schemas/users"
-import { CPF } from "../utils/cpf"
+import { UserSignupRequest, UserSignInRequest, UserEditRequest, } from "../schemas/users"
+import { cpfIsValid } from "../utils"
 
 export class UserController {
     async create(req: FastifyRequest, reply: FastifyReply) {
@@ -25,7 +25,6 @@ export class UserController {
             const user = await edit(id, { name, email, old_password, password })
 
             return reply.code(200).send(user)
-            
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }
@@ -54,30 +53,38 @@ export class UserController {
     }
 
     async updateProfile(req: FastifyRequest, reply: FastifyReply) {
-        
         try {
             const { id }: any = req.user
             const { cpf, phoneNumber }: any = req.body
 
-            const verifiedCpf = new CPF(cpf)
-            //como fazer pra lidar com cpf ou phoneNumber 
+            if (!cpfIsValid(cpf))
+                return reply.code(401).send({ message: "Cpf invalid" })
+
+            //como fazer pra lidar com cpf ou phoneNumber
             //verificar phoneNumber
+
             const updatedUser = await updateUserProfile(id, {
-                cpf: verifiedCpf.toString(),
+                cpf: cpf,
                 phoneNumber,
             })
 
+            return reply.code(200).send(updatedUser)
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            console.log(`Erro: ${error}`)
+
+            return reply.code(500).send({ Error: "Server Error" })
         }
-        
-        
-        return reply.code(200).send(updateUserProfile)
     }
 
     async getOrders(req: FastifyRequest, reply: FastifyReply) {
-        const { id }: any = req.user
-        const orders = await getUserOrders(id)
-        return reply.code(200).send(orders)
+        try {
+            const { id }: any = req.user
+            const orders = await getUserOrders(id)
+            return reply.code(200).send(orders)
+        } catch (error) {
+            console.log(`Erro: ${error}`)
+
+            return reply.code(500).send({ Error: "Server Error" })
+        }
     }
 }
