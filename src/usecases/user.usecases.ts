@@ -10,10 +10,10 @@ export interface UserSignupRequest {
 }
 
 export interface UserEditRequest {
-    name?: string,
-    email?: string,
-    password?: string,
-    old_password?: string
+    name: string | null,
+    email: string | null,
+    password: string | null,
+    old_password: string | null
 }
 
 export interface UserSignInRequest {
