@@ -3,6 +3,6 @@ import { ProductListingController } from "../../controllers/customer/product-lis
 
 const controller = new ProductListingController()
 
-export async function productListing(app: FastifyInstance) {
+export async function productsRouter(app: FastifyInstance) {
   app.get("/products", controller.getProducts)
 }

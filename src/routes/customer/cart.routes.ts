@@ -4,7 +4,7 @@ import { isAuthenticated } from "../../middlewares/isAuthenticated";
 
 const controller = new CartOperationsController()
 
-export async function cartOperations(app: FastifyInstance) {
+export async function cartRouter(app: FastifyInstance) {
   app.post("/cart/add", { preHandler: isAuthenticated }, controller.addItem)
   app.delete("/cart/delete/:cartItemId", { preHandler: isAuthenticated }, controller.deleteItem)
   app.delete("/cart/remove/:cartItemId", { preHandler: isAuthenticated }, controller.removeItem)
