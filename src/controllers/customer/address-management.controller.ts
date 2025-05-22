@@ -20,10 +20,8 @@ export class AddressManagementController {
             const address = await addNewAddress({ street, number, neighborhood, city, state, country, postalCode, recipient, reference, customerId })
 
             return reply.code(200).send(address)
-        } catch (err) {
-            console.log("err: ", err);
-
-            return reply.code(500).send({ error: "Server Error" })
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
         }
     }
 

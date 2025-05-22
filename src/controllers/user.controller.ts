@@ -19,10 +19,9 @@ export class UserController {
 
     async update(req: FastifyRequest, reply: FastifyReply) {
         try {
-            UserEditRequest.parse(req.body)
+            const userData = UserEditRequest.parse(req.body)
             const { id } = req.user
-            const { name, email, old_password, password }: any = req.body
-            const user = await edit(id, { name, email, old_password, password })
+            const user = await edit(id, userData)
 
             return reply.code(200).send(user)
         } catch (error) {
@@ -58,10 +57,10 @@ export class UserController {
             const { cpf, phoneNumber }: any = req.body
 
             if (!cpfIsValid(cpf))
-                return reply.code(401).send({ message: "Cpf invalid" })
+                throw new Error(`Invalid CPF`)
 
-            //como fazer pra lidar com cpf ou phoneNumber
-            //verificar phoneNumber
+            // como fazer pra lidar com cpf ou phoneNumber
+            // verificar phoneNumber
 
             const updatedUser = await updateUserProfile(id, {
                 cpf: cpf,
@@ -70,9 +69,7 @@ export class UserController {
 
             return reply.code(200).send(updatedUser)
         } catch (error) {
-            console.log(`Erro: ${error}`)
-
-            return reply.code(500).send({ Error: "Server Error" })
+            throw new Error(`Erro: ${error}`)
         }
     }
 
@@ -82,9 +79,7 @@ export class UserController {
             const orders = await getUserOrders(id)
             return reply.code(200).send(orders)
         } catch (error) {
-            console.log(`Erro: ${error}`)
-
-            return reply.code(500).send({ Error: "Server Error" })
+            throw new Error(`Erro: ${error}`)
         }
     }
 }

@@ -7,10 +7,8 @@ export class OrdersController {
             const { id } = req.user
             const orders = await getOrders(id)
             return reply.code(200).send(orders)
-        } catch (err) {
-            console.log("err: ", err);
-
-            return reply.code(500).send({ error: "Server Error" })
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
         }
     }
 
@@ -22,10 +20,8 @@ export class OrdersController {
             const order = await getOrder(id, orderId);
 
             return reply.code(200).send(order);
-        } catch (err) {
-            console.log("err: ", err);
-
-            return reply.code(500).send({ error: "Server Error" })
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
         }
     }
 }

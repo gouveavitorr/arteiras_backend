@@ -21,10 +21,8 @@ export class ProductListingController {
                     hasPreviousPage: page > 1,
                 }
             }
-        } catch (err) {
-            console.log("err: ", err);
-
-            return reply.code(500).send({ error: "Server Error" })
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
         }
     }
 }

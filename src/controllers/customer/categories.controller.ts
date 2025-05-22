@@ -7,10 +7,8 @@ export class CategoriesController {
             const categories = await getCategories()
 
             return reply.code(200).send(categories)
-        } catch (err) {
-            console.log("err: ", err);
-
-            return reply.code(500).send({ error: "Server Error" })
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
         }
     }
 
@@ -20,10 +18,8 @@ export class CategoriesController {
             const products = await getProductsByCategory(categoryId)
 
             return reply.code(200).send(products)
-        } catch (err) {
-            console.log("err: ", err);
-
-            return reply.code(500).send({ error: "Server Error" })
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
         }
     }
 
@@ -33,9 +29,8 @@ export class CategoriesController {
             const stores = await getStoresByCategory(categoryId)
 
             return reply.code(200).send(stores)
-        } catch (err) {
-            console.log("err: ", err);
-            return reply.code(500).send({ error: "Server Error" })
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
         }
     }
 }

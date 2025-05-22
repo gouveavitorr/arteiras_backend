@@ -8,7 +8,7 @@ export class StoresController {
 
             return reply.code(200).send(stores)
         } catch (error) {
-            throw new Error(`Erro: ${error.message}`)
+            throw new Error(`Erro: ${error}`)
         }
     }
 
@@ -19,7 +19,7 @@ export class StoresController {
 
             return reply.code(200).send(store);
         } catch (error) {
-            throw new Error(`Erro: ${error.message}`)
+            throw new Error(`Erro: ${error}`)
         }
     }
 }
