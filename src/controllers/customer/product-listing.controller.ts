@@ -3,22 +3,26 @@ import { getPaginatedProducts } from "../../usecases/customer/product-listing.us
 
 export class ProductListingController {
     async getProducts(req: FastifyRequest, reply: FastifyReply) {
-        const page = parseInt(req.query.page) || 1
-        const limit = parseInt(req.query.limit) || 10
-        const offset = (page - 1) * limit
-        const { products, totalItems } = await getPaginatedProducts(offset, limit)
+        try {
+            const page = parseInt(req.query.page) || 1
+            const limit = parseInt(req.query.limit) || 10
+            const offset = (page - 1) * limit
+            const { products, totalItems } = await getPaginatedProducts(offset, limit)
 
-        const totalPages = Math.ceil(totalItems / limit)
+            const totalPages = Math.ceil(totalItems / limit)
 
-        return {
-            products,
-            pagination: {
-              currentPage: page,
-              totalPages,
-              totalItems,
-              hasNextPage: page < totalPages,
-              hasPreviousPage: page > 1,
+            return {
+                products,
+                pagination: {
+                    currentPage: page,
+                    totalPages,
+                    totalItems,
+                    hasNextPage: page < totalPages,
+                    hasPreviousPage: page > 1,
+                }
             }
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
         }
     }
 }
