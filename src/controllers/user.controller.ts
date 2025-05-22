@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 import { signUp, edit, signIn, getUserProfile, updateUserProfile, getUserOrders } from "../usecases/user.usecases"
 import { UserSignupRequest, UserSignInRequest, UserEditRequest, } from "../schemas/users"
-import { cpfIsValid } from "../utils"
+import { CPF } from "../utils"
 
 export class UserController {
     async create(req: FastifyRequest, reply: FastifyReply) {
@@ -56,10 +56,7 @@ export class UserController {
             const { id }: any = req.user
             const { cpf, phoneNumber }: any = req.body
 
-            if (!cpfIsValid(cpf))
-                throw new Error(`Invalid CPF`)
-
-            // como fazer pra lidar com cpf ou phoneNumber
+            const verifiedCPF = new CPF(cpf)
             // verificar phoneNumber
 
             const updatedUser = await updateUserProfile(id, {
