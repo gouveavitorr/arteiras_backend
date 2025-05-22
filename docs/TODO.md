@@ -3,6 +3,9 @@
     - Classes utilitárias de CPF, phoneNumber, address etc para tratamento de dados
     - ID na URL e o resto no body - dependendo da entidade
 
+- [ ] UpdateUserProfile
+    - [ ] manter valores que não foram modificados de forma eficiente sem ter que reenviar o mesmo valor para o banco
+
 - [x] Adicionar logger
 
 - [ ] User Signup/Login
