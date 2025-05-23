@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken"
+import { Payload } from "../utils/types"
 
-export async function verify(token: any) {
+export async function verify(token: string) {
     try {
         return jwt.verify(token, process.env.AUTH_SECRET!)
     } catch (error) {
@@ -8,7 +9,7 @@ export async function verify(token: any) {
     }
 }
 
-export async function sign(payload: any) {
+export async function sign(payload: Payload) {
     return jwt.sign(payload, process.env.AUTH_SECRET!, {
         expiresIn: "1h"
     })
