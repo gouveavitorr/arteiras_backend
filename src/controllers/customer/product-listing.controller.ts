@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { getPaginatedProducts } from "../../usecases/customer/product-listing.usecases";
 
 export class ProductListingController {
-    async getProducts(req: FastifyRequest, reply: FastifyReply) {
+    async getProducts(req: FastifyRequest<{ Querystring: { page: string, limit: string } }>, reply: FastifyReply) {
         try {
             const page = parseInt(req.query.page) || 1
             const limit = parseInt(req.query.limit) || 10

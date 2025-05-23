@@ -6,9 +6,8 @@ import { CPF } from "../utils"
 export class UserController {
     async create(req: FastifyRequest, reply: FastifyReply) {
         try {
-            UserSignupRequest.parse(req.body)
-            const { name, email, password }: any = req.body
-            const user = await signUp({ name, email, password })
+            const userData = UserSignupRequest.parse(req.body)
+            const user = await signUp(userData)
 
             return reply.code(200).send(user)
 
@@ -31,9 +30,8 @@ export class UserController {
 
     async login(req: FastifyRequest, reply: FastifyReply) {
         try {
-            UserSignInRequest.parse(req.body)
-            const { email, password }: any = req.body
-            const user = await signIn({ email, password })
+            const userData = UserSignInRequest.parse(req.body)
+            const user = await signIn(userData)
             return reply.code(200).send(user)
         } catch (error) {
             throw new Error(`Erro: ${error}`)

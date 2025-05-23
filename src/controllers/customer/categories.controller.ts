@@ -2,7 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { getCategories, getProductsByCategory, getStoresByCategory } from "../../usecases/customer/categories.usecases";
 
 export class CategoriesController {
-    async getCategories(req: FastifyRequest, reply: FastifyReply) {
+    async getCategories(_req: FastifyRequest, reply: FastifyReply) {
         try {
             const categories = await getCategories()
 
@@ -12,9 +12,9 @@ export class CategoriesController {
         }
     }
 
-    async getProductsByCategory(req: FastifyRequest, reply: FastifyReply) {
+    async getProductsByCategory(req: FastifyRequest<{ Params: { categoryId: string } }>, reply: FastifyReply) {
         try {
-            const { categoryId }: any = req.params
+            const { categoryId } = req.params
             const products = await getProductsByCategory(categoryId)
 
             return reply.code(200).send(products)
@@ -23,9 +23,9 @@ export class CategoriesController {
         }
     }
 
-    async getStoresByCategory(req: FastifyRequest, reply: FastifyReply) {
+    async getStoresByCategory(req: FastifyRequest<{ Params: { categoryId: string } }>, reply: FastifyReply) {
         try {
-            const { categoryId }: any = req.params
+            const { categoryId } = req.params
             const stores = await getStoresByCategory(categoryId)
 
             return reply.code(200).send(stores)

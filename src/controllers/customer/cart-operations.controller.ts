@@ -1,11 +1,11 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { addItemToCart, showUniqueCartItem, showCartItems, removeOneItemFromCart, deleteItemFromCart, clearCart } from "../../usecases/customer/cart-operations.usecases";
+import { addItemToCart, showUniqueCartItem, showCartItems, removeOneItemFromCart, deleteItemFromCart, clearCart, CartItemRequest } from "../../usecases/customer/cart-operations.usecases";
 
 export class CartOperationsController {
-    async addItem(req: FastifyRequest, reply: FastifyReply) {
+    async addItem(req: FastifyRequest<{ Body: CartItemRequest }>, reply: FastifyReply) {
         try {
             const { id } = req.user
-            const { productId, quantity }: any = req.body
+            const { productId, quantity } = req.body
             const item = await addItemToCart({ productId, userId: id, quantity })
 
             return reply.code(200).send(item)
@@ -14,10 +14,10 @@ export class CartOperationsController {
         }
     }
 
-    async deleteItem(req: FastifyRequest, reply: FastifyReply) {
+    async deleteItem(req: FastifyRequest<{ Params: { cartItemId: string } }>, reply: FastifyReply) {
         try {
-            const { cartItemId }: any = req.params
-            const product = await deleteItemFromCart(cartItemId)
+            const { cartItemId } = req.params
+            await deleteItemFromCart(cartItemId)
 
             return reply.code(200).send("Produto excluído do carrinho.")
         } catch (error) {
@@ -25,9 +25,9 @@ export class CartOperationsController {
         }
     }
 
-    async removeItem(req: FastifyRequest, reply: FastifyReply) {
+    async removeItem(req: FastifyRequest<{ Params: { cartItemId: string } }>, reply: FastifyReply) {
         try {
-            const { cartItemId }: any = req.params
+            const { cartItemId } = req.params
             const item = await showUniqueCartItem(cartItemId)
 
             if (item.quantity <= 0) {
@@ -35,7 +35,7 @@ export class CartOperationsController {
                 return reply.code(200).send("Produto excluído do carrinho.")
             }
 
-            const itemDeleted = await removeOneItemFromCart(cartItemId)
+            await removeOneItemFromCart(cartItemId)
 
             return reply.code(200).send("Um item retirado.")
         } catch (error) {
