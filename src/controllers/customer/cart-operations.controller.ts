@@ -4,7 +4,7 @@ import { addItemToCart, showUniqueCartItem, showCartItems, removeOneItemFromCart
 export class CartOperationsController {
     async addItem(req: FastifyRequest, reply: FastifyReply) {
         try {
-            const { id } = req.user
+            const { id } = req.user!
             const { productId, quantity }: any = req.body
             const item = await addItemToCart({ productId, userId: id, quantity })
 
@@ -17,7 +17,7 @@ export class CartOperationsController {
     async deleteItem(req: FastifyRequest, reply: FastifyReply) {
         try {
             const { cartItemId }: any = req.params
-            const product = await deleteItemFromCart(cartItemId)
+            await deleteItemFromCart(cartItemId)
 
             return reply.code(200).send("Produto excluído do carrinho.")
         } catch (error) {
@@ -25,9 +25,9 @@ export class CartOperationsController {
         }
     }
 
-    async removeItem(req: FastifyRequest, reply: FastifyReply) {
+    async removeItem(req: FastifyRequest<{ Params: { cartItemId: string } }>, reply: FastifyReply) {
         try {
-            const { cartItemId }: any = req.params
+            const { cartItemId } = req.params
             const item = await showUniqueCartItem(cartItemId)
 
             if (item.quantity <= 0) {
@@ -35,7 +35,7 @@ export class CartOperationsController {
                 return reply.code(200).send("Produto excluído do carrinho.")
             }
 
-            const itemDeleted = await removeOneItemFromCart(cartItemId)
+            await removeOneItemFromCart(cartItemId)
 
             return reply.code(200).send("Um item retirado.")
         } catch (error) {
@@ -45,7 +45,7 @@ export class CartOperationsController {
 
     async clearCart(req: FastifyRequest, reply: FastifyReply) {
         try {
-            const { id } = req.user
+            const { id } = req.user!
             await clearCart(id)
 
             return reply.code(200).send({ message: "Carrinho vazio." })
@@ -56,7 +56,7 @@ export class CartOperationsController {
 
     async showItems(req: FastifyRequest, reply: FastifyReply) {
         try {
-            const { id } = req.user
+            const { id } = req.user!
             const items = await showCartItems(id)
 
             return reply.code(200).send(items)

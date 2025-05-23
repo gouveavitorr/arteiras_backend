@@ -20,7 +20,7 @@ export class UserController {
     async update(req: FastifyRequest, reply: FastifyReply) {
         try {
             const userData = UserEditRequest.parse(req.body)
-            const { id } = req.user
+            const { id } = req.user!
             const user = await edit(id, userData)
 
             return reply.code(200).send(user)
@@ -43,7 +43,7 @@ export class UserController {
     async getProfile(req: FastifyRequest, reply: FastifyReply) {
         try {
             //parse req
-            const { id }: any = req.user
+            const { id } = req.user!
             const profile = await getUserProfile(id)
             return reply.code(200).send(profile)
         } catch (error) {
@@ -53,7 +53,7 @@ export class UserController {
 
     async updateProfile(req: FastifyRequest, reply: FastifyReply) {
         try {
-            const { id }: any = req.user
+            const { id } = req.user!
             const { cpf, phoneNumber }: any = req.body
 
             const verifiedCPF = new CPF(cpf)
@@ -72,7 +72,7 @@ export class UserController {
 
     async getOrders(req: FastifyRequest, reply: FastifyReply) {
         try {
-            const { id }: any = req.user
+            const { id } = req.user!
             const orders = await getUserOrders(id)
             return reply.code(200).send(orders)
         } catch (error) {
