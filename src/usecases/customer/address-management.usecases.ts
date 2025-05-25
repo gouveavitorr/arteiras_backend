@@ -27,88 +27,88 @@ export interface EditAddressInterface {
 }
 
 export const addNewAddress = async (data: AddressRequest) => {
-        const user = await prisma.user.findFirst({
-            where: {
-                id: data.userId
-            }
-        })
-
-        if (!user) {
-            throw new Error("Usuário não encontrado.")
+    const user = await prisma.user.findFirst({
+        where: {
+            id: data.userId
         }
+    })
 
-        const address = await prisma.address.create({
-            data: {
-                street: data.street,
-                number: data.number,
-                neighborhood: data?.neighborhood,
-                city: data.city,
-                state: data.state,
-                country: data.country,
-                postalCode: data.postalCode,
-                recipient: data.recipient,
-                reference: data?.reference,
-                userId: user.id
-            }
-        })
-        return address
+    if (!user) {
+        throw new Error("Usuário não encontrado.")
+    }
+
+    const address = await prisma.address.create({
+        data: {
+            street: data.street,
+            number: data.number,
+            neighborhood: data?.neighborhood,
+            city: data.city,
+            state: data.state,
+            country: data.country,
+            postalCode: data.postalCode,
+            recipient: data.recipient,
+            reference: data?.reference,
+            userId: user.id
+        }
+    })
+    return address
 }
 
 export const showAddresses = async (id: string) => {
-        const user = await prisma.user.findFirst({
-            where: {
-                id
-            }
-        })
-
-        if (!user) {
-            throw new Error("Usuário não encontrado.")
+    const user = await prisma.user.findFirst({
+        where: {
+            id
         }
+    })
 
-        const addresses = await prisma.address.findMany({
-            where: {
-                userId: user.id
-            }
-        })
+    if (!user) {
+        throw new Error("Usuário não encontrado.")
+    }
 
-        return addresses
+    const addresses = await prisma.address.findMany({
+        where: {
+            userId: user.id
+        }
+    })
+
+    return addresses
 }
 
 export const editAddress = async (id: string, data: EditAddressInterface) => {
-        const address = await prisma.address.findFirst({
-            where: {
-                id
-            }
-        })
-
-        if (!address) {
-            throw new Error("Endereço não encontrado.")
+    const address = await prisma.address.findFirst({
+        where: {
+            id
         }
+    })
 
-        const updatedAddress = await prisma.address.update({
-            where: {
-                id: address.id
-            },
-            data: {
-                street: data?.street || address.street,
-                number: data?.number || address.number,
-                neighborhood: data?.neighborhood || address.neighborhood,
-                city: data?.city || address.city,
-                state: data?.state || address.state,
-                country: data?.country || address.country,
-                postalCode: data?.postalCode || address.postalCode,
-                recipient: data?.recipient || address.recipient,
-                reference: data?.reference || address.reference
-            }
-        })
+    if (!address) {
+        throw new Error("Endereço não encontrado.")
+    }
 
-        return updatedAddress
+    const updatedAddress = await prisma.address.update({
+        where: {
+            id: address.id
+        },
+        data: {
+            street: data?.street || address.street,
+            number: data?.number || address.number,
+            neighborhood: data?.neighborhood || address.neighborhood,
+            city: data?.city || address.city,
+            state: data?.state || address.state,
+            country: data?.country || address.country,
+            postalCode: data?.postalCode || address.postalCode,
+            recipient: data?.recipient || address.recipient,
+            reference: data?.reference || address.reference
+        }
+    })
+
+    return updatedAddress
 }
 
 export const deleteAddress = async (id: string) => {
-        const address = await prisma.address.delete({
-            where: {
-                id
-            }
-        })
+    return await prisma.address.delete({
+        where: {
+            id
+        }
+    })
 }

@@ -12,10 +12,10 @@ export class OrdersController {
         }
     }
 
-    async getOrder(req: FastifyRequest, reply: FastifyReply) {
+    async getOrder(req: FastifyRequest<{ Params: { orderId: string } }>, reply: FastifyReply) {
         try {
             const { id } = req.user!
-            const { orderId }: any = req.params;
+            const { orderId } = req.params;
 
             const order = await getOrder(id, orderId);
 
