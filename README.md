@@ -1,6 +1,6 @@
 ## Projeto Arteiras (backend)
 
-## SETUP
+## Configuração
 
 * Clone o repositório
 
@@ -29,8 +29,17 @@
 
 ```env
 
-    DATABASE_URL="database url (postgres)"
-    AUTH_SECRET="jwt secret"
-    PORT="api port"
+    DATABASE_URL="Url de conexão do banco de dados (postgres)"
+    AUTH_SECRET="senha utilizada no JWT"
+    PORT="A porta para a API"
+    HOST="O host para a API"
+
+```
+
+* Inicie a API
+
+```sh
+
+    npm run dev
 
 ```
