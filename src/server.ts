@@ -1,5 +1,5 @@
 import { FastifyInstance, fastify } from "fastify";
-import { productsRouter, /*ordersRouter,*/ cartRouter, storesRouter, categoriesRouter } from "./routes/customer"
+import { productsRouter, /*ordersRouter,*/ cartRouter, storesRouter, categoriesRouter, addressesRouter } from "./routes/customer"
 import { user } from "./routes/user.routes"
 
 export const app: FastifyInstance = fastify({
@@ -43,6 +43,7 @@ app.register(productsRouter)
 app.register(categoriesRouter)
 app.register(storesRouter)
 app.register(cartRouter)
+app.register(addressesRouter)
 app.register(user)
 
 const port = process.env.PORT as unknown as number

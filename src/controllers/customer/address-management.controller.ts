@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { addNewAddress, AddressRequest } from "../../usecases/customer/address-management.usecases";
+import { addNewAddress, AddressRequest, deleteAddress, editAddress, EditAddressInterface, showAddresses } from "../../usecases/customer/address-management.usecases";
+import { statusCodes } from "../../utils/types";
 
 export class AddressManagementController {
     async addAddress(req: FastifyRequest<{ Body: AddressRequest }>, reply: FastifyReply) {
@@ -18,7 +19,18 @@ export class AddressManagementController {
                 userId
             } = req.body
 
-            const address = await addNewAddress({ street, number, neighborhood, city, state, country, postalCode, recipient, reference, userId })
+            const address = await addNewAddress({ 
+                street, 
+                number, 
+                neighborhood, 
+                city, 
+                state, 
+                country, 
+                postalCode, 
+                recipient, 
+                reference, 
+                userId 
+            })
 
             return reply.code(200).send(address)
         } catch (error) {
@@ -27,7 +39,83 @@ export class AddressManagementController {
     }
 
     async getAddresses(req: FastifyRequest, reply: FastifyReply) {
-        // const { customerId }: any = req.params
-        // const addresses = 
+        try {
+            const { id } = req.user!
+            const addresses = await showAddresses(id)
+            return reply.code(statusCodes.successful).send(addresses)
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
+        }
+    }
+
+    async updateAddress(req: FastifyRequest<{ Body: EditAddressInterface }>, reply: FastifyReply) {
+        try {
+            const { addressId } = req.params
+            const {
+                street,
+                number,
+                neighborhood,
+                city,
+                state,
+                country,
+                postalCode,
+                recipient,
+                reference,
+                userId
+            } = req.body
+
+            const updatedAddress = await editAddress(addressId, {
+                street,
+                number,
+                neighborhood,
+                city,
+                state,
+                country,
+                postalCode,
+                recipient,
+                reference,
+                userId
+            })
+
+            return reply.code(statusCodes.successful).send(updatedAddress)
+
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
+        }
+    }
+
+    async removeAddress(req: FastifyRequest, reply: FastifyReply) {
+        const { addressId } = req.params
+        await deleteAddress(addressId)
+
+        return reply.code(statusCodes.successful).send({ message: "Endereço excluído."})
+    }
+
+    async getPostalCode(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const { postalCode } = req.params
+            const response = await fetch(`https://brasilapi.com.br/api/cep/v2/${postalCode}`)
+
+            if(!response.ok) {
+                throw new Error("Não foi possível buscar o CEP.")
+            }
+
+            const data = await response.json()
+            const payload = {
+              state: data.state,
+              city: data.city,
+              neighborhood: data.neighborhood,
+              street: data.street,
+            }
+            return reply.code(statusCodes.successful).send(payload)
+
+        } catch (error) {
+          return reply.code(statusCodes.successful).send({
+            state: null,
+            city: null,
+            neighborhood: null,
+            street: null,
+          })
+        }
     }
 }
