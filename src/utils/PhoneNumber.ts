@@ -8,7 +8,7 @@ export class PhoneNumber {
 
     isValid() : boolean {
 
-        if(this.value.length > 11 || this.value.length < 10) throw new Error("Invalid phone number")
+        if(this.value.length != 11) return false
 
         if(
             parseInt(this.value[0]) > 0
