@@ -19,8 +19,12 @@ export class PhoneNumber {
         return false
     }
 
-    getInternationalFormat(): string{
+    getInternationalFormat(): string {
         return "+55".concat(this.value)
+    }
+
+    toString(): string {
+        return this.value
     }
 
 }
