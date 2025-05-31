@@ -1,7 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 import { signUp, edit, signIn, getUserProfile, updateUserProfile, getUserOrders } from "../usecases/user.usecases"
 import { UserSignupRequest, UserSignInRequest, UserEditRequest, } from "../schemas/users"
-import { CPF } from "../utils"
 
 export class UserController {
     async create(req: FastifyRequest, reply: FastifyReply) {
@@ -42,7 +41,6 @@ export class UserController {
 
     async getProfile(req: FastifyRequest, reply: FastifyReply) {
         try {
-            //parse req
             const { id }: any = req.user
             const profile = await getUserProfile(id)
             return reply.code(200).send(profile)
@@ -55,9 +53,6 @@ export class UserController {
         try {
             const { id }: any = req.user
             const { cpf, phoneNumber }: any = req.body
-
-            const verifiedCPF = new CPF(cpf)
-            // verificar phoneNumber
 
             const updatedUser = await updateUserProfile(id, {
                 cpf: cpf,
