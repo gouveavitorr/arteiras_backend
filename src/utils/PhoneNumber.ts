@@ -12,9 +12,7 @@ export class PhoneNumber {
 
         if(
             parseInt(this.value[0]) > 0
-            && parseInt(this.value[0]) <= 9
             && parseInt(this.value[1]) > 0
-            && parseInt(this.value[1]) <= 9
             && parseInt(this.value[2]) == 9
         ) return true
 
@@ -22,7 +20,7 @@ export class PhoneNumber {
     }
 
     getInternationalFormat(): string{
-        return this.value.concat("+55")
+        return "+55".concat(this.value)
     }
 
 }
