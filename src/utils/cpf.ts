@@ -9,7 +9,7 @@ export class CPF {
 
     private isValid() : boolean{
 
-        if(this.value.length != 11) throw new Error("Invalid CPF")
+        if(this.value.length != 11) return false
  
         let firstVerifDigit = 0
         let j = 10
@@ -51,7 +51,7 @@ export class CPF {
                 if(this.value[i] != this.value[i + 1]) return true
             }
         }
-
+        
         return false
     }
 
