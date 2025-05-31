@@ -8,17 +8,21 @@ export class PhoneNumber {
 
     isValid() : boolean {
 
-        if(this.value.length != 11) throw new Error("Invalid phone number")
+        if(this.value.length > 11 || this.value.length < 10) throw new Error("Invalid phone number")
 
-        //this.value[0] > 0 && this.value[0] <= 9
-        //this.value[1] > 0 && this.value[1] <= 9
-        //this.value[2] == 9
+        if(
+            parseInt(this.value[0]) > 0
+            && parseInt(this.value[0]) <= 9
+            && parseInt(this.value[1]) > 0
+            && parseInt(this.value[1]) <= 9
+            && parseInt(this.value[2]) == 9
+        ) return true
 
         return false
     }
 
     getInternationalFormat(): string{
-        return 
+        return this.value.concat("+55")
     }
 
 }
