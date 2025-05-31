@@ -8,6 +8,8 @@ export class CPF {
     }
 
     private isValid() : boolean{
+
+        if(this.value.length != 11) throw new Error("Invalid CPF")
  
         let firstVerifDigit = 0
         let j = 10
@@ -44,10 +46,21 @@ export class CPF {
         }
 
         if(parseInt(this.value[9]) == firstVerifDigit && parseInt(this.value[10]) == secondVerifDigit){
-            return true
+            
+            for (let i = 0; i < this.value.length; i++) {
+                if(this.value[i] != this.value[i + 1]) return true
+            }
         }
 
         return false
+    }
+
+    getFormattedValue(): string {
+        return this.value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
+    }
+
+    equals(other: CPF): boolean {
+        return this.toString() === other.toString()
     }
 
     public toString(){
