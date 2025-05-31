@@ -27,4 +27,8 @@ export class PhoneNumber {
         return this.value
     }
 
+    equals(other: PhoneNumber): boolean {
+        return this.toString() === other.toString()
+    }
+
 }
