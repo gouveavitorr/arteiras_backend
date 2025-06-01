@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { addItemToCart, showUniqueCartItem, showCartItems, removeOneItemFromCart, deleteItemFromCart, clearCart, CartItemRequest } from "../../usecases/customer/cart-operations.usecases";
+import { statusCodes } from "../../utils/types";
 
 export class CartOperationsController {
     async addItem(req: FastifyRequest<{ Body: CartItemRequest }>, reply: FastifyReply) {
@@ -9,7 +10,7 @@ export class CartOperationsController {
 
             const item = await addItemToCart({ productId, userId: id, quantity })
 
-            return reply.code(200).send(item)
+            return reply.code(statusCodes.successful).send(item)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }
@@ -21,7 +22,7 @@ export class CartOperationsController {
 
             await deleteItemFromCart(cartItemId)
 
-            return reply.code(200).send("Produto excluído do carrinho.")
+            return reply.code(statusCodes.successful).send("Produto excluído do carrinho.")
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }
@@ -34,12 +35,12 @@ export class CartOperationsController {
 
             if (item.quantity <= 0) {
                 deleteItemFromCart(cartItemId)
-                return reply.code(200).send("Produto excluído do carrinho.")
+                return reply.code(statusCodes.successful).send("Produto excluído do carrinho.")
             }
 
             await removeOneItemFromCart(cartItemId)
 
-            return reply.code(200).send("Um item retirado.")
+            return reply.code(statusCodes.successful).send("Um item retirado.")
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }
@@ -50,7 +51,7 @@ export class CartOperationsController {
             const { id } = req.user!
             await clearCart(id)
 
-            return reply.code(200).send({ message: "Carrinho vazio." })
+            return reply.code(statusCodes.successful).send({ message: "Carrinho vazio." })
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }
@@ -61,7 +62,7 @@ export class CartOperationsController {
             const { id } = req.user!
             const items = await showCartItems(id)
 
-            return reply.code(200).send(items)
+            return reply.code(statusCodes.successful).send(items)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }

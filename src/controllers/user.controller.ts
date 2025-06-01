@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 import { signUp, edit, signIn, getUserProfile, updateUserProfile, getUserOrders } from "../usecases/user.usecases"
 import { UserSignupRequest, UserSignInRequest, UserEditRequest, } from "../schemas/users"
+import { statusCodes } from "../utils/types"
 
 export class UserController {
     async create(req: FastifyRequest, reply: FastifyReply) {
@@ -8,7 +9,7 @@ export class UserController {
             const userData = UserSignupRequest.parse(req.body)
             const user = await signUp(userData)
 
-            return reply.code(200).send(user)
+            return reply.code(statusCodes.successful).send(user)
 
         } catch (error) {
             throw new Error(`Erro: ${error}`)
@@ -21,7 +22,7 @@ export class UserController {
             const { id } = req.user!
             const user = await edit(id, userData)
 
-            return reply.code(200).send(user)
+            return reply.code(statusCodes.successful).send(user)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }
@@ -31,7 +32,7 @@ export class UserController {
         try {
             const userData = UserSignInRequest.parse(req.body)
             const user = await signIn(userData)
-            return reply.code(200).send(user)
+            return reply.code(statusCodes.successful).send(user)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }
@@ -42,7 +43,7 @@ export class UserController {
             //parse req
             const { id } = req.user!
             const profile = await getUserProfile(id)
-            return reply.code(200).send(profile)
+            return reply.code(statusCodes.successful).send(profile)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }
@@ -58,7 +59,7 @@ export class UserController {
                 phoneNumber,
             })
 
-            return reply.code(200).send(updatedUser)
+            return reply.code(statusCodes.successful).send(updatedUser)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }
@@ -68,7 +69,7 @@ export class UserController {
         try {
             const { id } = req.user!
             const orders = await getUserOrders(id)
-            return reply.code(200).send(orders)
+            return reply.code(statusCodes.successful).send(orders)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }

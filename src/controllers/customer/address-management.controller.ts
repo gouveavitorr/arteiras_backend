@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { addNewAddress, AddressRequest } from "../../usecases/customer/address-management.usecases";
+import { statusCodes } from "../../utils/types";
 
 export class AddressManagementController {
     async addAddress(req: FastifyRequest<{ Body: AddressRequest }>, reply: FastifyReply) {
@@ -20,7 +21,7 @@ export class AddressManagementController {
 
             const address = await addNewAddress({ street, number, neighborhood, city, state, country, postalCode, recipient, reference, userId })
 
-            return reply.code(200).send(address)
+            return reply.code(statusCodes.successful).send(address)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }
