@@ -1,7 +1,8 @@
 import { sign } from "../configs/jwt";
 import { prisma } from "../lib/prisma";
 import argon2 from "argon2"
-
+import { CPF } from "../utils/cpf"
+import { PhoneNumber } from "../utils/PhoneNumber";
 
 export interface UserSignupRequest {
     name: string,
@@ -150,19 +151,22 @@ export const updateUserProfile = async (id: string, data: UserUpdateProfileReque
     })
 
     if (!user) {
-        throw new Error("Usuário não encontrado");
+        throw new Error("User not found");
     }
+
+    const verifiedCpf = new CPF(data?.cpf)
+    const verifiedPhoneNumber = new PhoneNumber(data?.phoneNumber)
 
     const updatedUser = await prisma.user.update({
         where: { id },
         data: {
-            cpf: data?.cpf || user.cpf,
-            phoneNumber: data?.phoneNumber || user.phoneNumber,
+            cpf: verifiedCpf.toString() || user.cpf,
+            phoneNumber: verifiedPhoneNumber.toString() || user.phoneNumber,
         },
     })
 
     if (!updatedUser) {
-        throw new Error("Falha ao atualizar usuário");
+        throw new Error("Falha ao atualizar usuário")
     }
 
     return updatedUser;
