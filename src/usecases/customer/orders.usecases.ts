@@ -1,44 +1,24 @@
-import {prisma } from "../../lib/prisma"
+import { prisma } from "../../lib/prisma"
 
-export const getOrders = async (id: string) => {
-
-    const user = await prisma.user.findFirst({
-        where: {
-            id
-        }
-    })
-
-    if(!user){
-        return new Error("Usuário não encontrado")
-    }
-
+// INFO: Get all orders from an authenticated user
+export const getOrders = async (userId: string) => {
     const orders = await prisma.order.findMany({
         where: {
-            userId: id
+            userId
         }
     })
+
     return orders
 }
 
-export const getOrder = async (id: string, orderId: string) => {
-
-    const user = await prisma.user.findFirst({
-        where: {
-            id
-        }
-    })
-
-    if(!user){
-        return new Error("Usuário não encontrado")
-    }
-
+// INFO: Get order from an authenticated user by ID
+export const getOrder = async (id: string, userId: string) => {
     const order = await prisma.order.findFirst({
         where: {
-            id: orderId,
-            userId: id
+            id,
+            userId
         }
     })
 
     return order
-
 }

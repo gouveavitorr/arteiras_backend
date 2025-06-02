@@ -1,6 +1,7 @@
 import { FastifyInstance, fastify } from "fastify";
 import { productsRouter, /*ordersRouter,*/ cartRouter, storesRouter, categoriesRouter, addressesRouter } from "./routes/customer"
 import { user } from "./routes/user.routes"
+import { statusCodes } from "./utils/types";
 
 export const app: FastifyInstance = fastify({
   exposeHeadRoutes: true, // Default value
@@ -32,10 +33,10 @@ app.setErrorHandler(async error => {
 })
 
 // INFO: Server Health check route
-app.get('/health', (_, res) => res.code(200).send({ status: "OK" }))
+app.get('/health', (_, reply) => reply.code(statusCodes.successful).send({ status: "OK" }))
 
 // INFO: Site icon
-app.get('/favicon.ico', (_, res) => res.code(204))
+app.get('/favicon.ico', (_, reply) => reply.code(statusCodes.noContent))
 
 // INFO: Routes
 // app.register(customerProfile)

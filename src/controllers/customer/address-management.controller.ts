@@ -10,7 +10,7 @@ export class AddressManagementController {
 
             const address = await addNewAddress(addressData)
 
-            return reply.code(200).send(address)
+            return reply.code(statusCodes.successful).send(address)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }

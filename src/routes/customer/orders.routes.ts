@@ -6,5 +6,10 @@ const controller = new OrdersController()
 
 export async function ordersRouter(app: FastifyInstance) {
   app.get("/orders", { preHandler: isAuthenticated }, controller.getOrders)
-  app.get("/orders/:orderId", { preHandler: isAuthenticated }, controller.getOrder)
+
+  app.get<{ Params: { orderId: string } }>(
+    "/orders/:orderId",
+    { preHandler: isAuthenticated },
+    controller.getOrder
+  )
 }
