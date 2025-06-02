@@ -1,36 +1,14 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { addNewAddress, AddressRequest, deleteAddress, editAddress, EditAddressInterface, showAddresses } from "../../usecases/customer/address-management.usecases";
 import { statusCodes } from "../../utils/types";
+import { AddAddressRequest } from "../../schemas/addresses";
 
 export class AddressManagementController {
     async addAddress(req: FastifyRequest<{ Body: AddressRequest }>, reply: FastifyReply) {
         try {
-            // TODO: Use zod to parse and validate the data
-            const {
-                street,
-                number,
-                neighborhood,
-                city,
-                state,
-                country,
-                postalCode,
-                recipient,
-                reference,
-                userId
-            } = req.body
+            const addressData = AddAddressRequest.parse(req.body) 
 
-            const address = await addNewAddress({ 
-                street, 
-                number, 
-                neighborhood, 
-                city, 
-                state, 
-                country, 
-                postalCode, 
-                recipient, 
-                reference, 
-                userId 
-            })
+            const address = await addNewAddress(addressData)
 
             return reply.code(200).send(address)
         } catch (error) {
@@ -51,31 +29,9 @@ export class AddressManagementController {
     async updateAddress(req: FastifyRequest<{ Body: EditAddressInterface }>, reply: FastifyReply) {
         try {
             const { addressId } = req.params
-            const {
-                street,
-                number,
-                neighborhood,
-                city,
-                state,
-                country,
-                postalCode,
-                recipient,
-                reference,
-                userId
-            } = req.body
+            const addressData = AddAddressRequest.parse(req.body)
 
-            const updatedAddress = await editAddress(addressId, {
-                street,
-                number,
-                neighborhood,
-                city,
-                state,
-                country,
-                postalCode,
-                recipient,
-                reference,
-                userId
-            })
+            const updatedAddress = await editAddress(addressId, addressData)
 
             return reply.code(statusCodes.successful).send(updatedAddress)
 

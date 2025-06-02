@@ -56,10 +56,10 @@
     - [ ] `GET`  - `/payments/status/:orderId` – checar status do pagamento de pedido específico
 
 - [ ] Address Management
-    - [ ] `GET`    - `/addresses`            - endereços do usuário logado
-    - [ ] `POST`   - `/addresses`            – adicionar um endereço novo
-    - [ ] `PUT`    - `/addresses/:addressId` – atualizar endereço
-    - [ ] `DELETE` - `/addresses/:addressId`
+    - [x] `GET`    - `/addresses`            - endereços do usuário logado
+    - [x] `POST`   - `/addresses`            – adicionar um endereço novo
+    - [x] `PUT`    - `/addresses/:addressId` – atualizar endereço
+    - [x] `DELETE` - `/addresses/:addressId`
 
 - [ ] Order Tracking
     - [ ] `GET` - `/orders/:orderId/tracking` – tracking info
