@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { getPaginatedProducts } from "../../usecases/customer/product-listing.usecases";
+import { getPaginatedProducts, getProduct } from "../../usecases/customer/product-listing.usecases";
+import { statusCodes } from "../../utils/types";
 
 export class ProductListingController {
     async getProducts(req: FastifyRequest<{ Querystring: { page: string, limit: string } }>, reply: FastifyReply) {
@@ -22,7 +23,17 @@ export class ProductListingController {
                 }
             }
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            return reply.code(statusCodes.badRequest).send(error.message)
+        }
+    }
+
+    async getProductItem(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const { productId } = req.params
+            const product = await getProduct(productId)
+            return reply.code(statusCodes.successful).send(product)
+        } catch (error) {
+            return reply.code(statusCodes.notFound).send(error.message)
         }
     }
 }

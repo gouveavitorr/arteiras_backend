@@ -10,6 +10,10 @@ export const getPaginatedProducts = async (offset: number, limit: number) => {
             }
         })
         
+        if (!products) {
+            throw new Error("Erro ao exibir produtos.")
+        }
+
         const totalItems = await prisma.product.count()
 
         return { products, totalItems }
@@ -26,5 +30,7 @@ export const getProduct = async (productId: string) => {
         if (!product) {
             throw new Error("Produto não encontrado.")
         }
+
+        return product
 
 }
