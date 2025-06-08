@@ -1,14 +1,15 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { addNewAddress, AddressRequest, deleteAddress, editAddress, EditAddressInterface, showAddresses } from "../../usecases/customer/address-management.usecases";
 import { statusCodes } from "../../utils/types";
-import { AddAddressRequest } from "../../schemas/addresses";
+import { AddAddressRequest, UpdateAddressRequest } from "../../schemas/addresses";
 
 export class AddressManagementController {
     async addAddress(req: FastifyRequest<{ Body: AddressRequest }>, reply: FastifyReply) {
         try {
+            const { id } = req.user!
             const addressData = AddAddressRequest.parse(req.body) 
 
-            const address = await addNewAddress(addressData)
+            const address = await addNewAddress(id, addressData)
 
             return reply.code(statusCodes.successful).send(address)
         } catch (error) {
@@ -28,10 +29,11 @@ export class AddressManagementController {
 
     async updateAddress(req: FastifyRequest<{ Body: EditAddressInterface }>, reply: FastifyReply) {
         try {
+            const { id } = req.user!
             const { addressId } = req.params
-            const addressData = AddAddressRequest.parse(req.body)
+            const addressData = UpdateAddressRequest.parse(req.body)
 
-            const updatedAddress = await editAddress(addressId, addressData)
+            const updatedAddress = await editAddress(id, addressId, addressData)
 
             return reply.code(statusCodes.successful).send(updatedAddress)
 
