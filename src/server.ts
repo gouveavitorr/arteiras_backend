@@ -2,6 +2,7 @@ import { FastifyInstance, fastify } from "fastify";
 import { productsRouter, /*ordersRouter,*/ cartRouter, storesRouter, categoriesRouter, addressesRouter } from "./routes/customer"
 import { user } from "./routes/user.routes"
 import { statusCodes } from "./utils/types";
+import rateLimit from "@fastify/rate-limit";
 
 export const app: FastifyInstance = fastify({
   exposeHeadRoutes: true, // Default value
@@ -30,6 +31,21 @@ app.setErrorHandler(async error => {
   app.log.warn(error.message)
 
   throw new Error(error.message)
+})
+
+// INFO: Core rate limiter plugin against too many requests
+app.register(rateLimit, {
+  max: 2,
+  timeWindow: 1000,
+  hook: 'onRequest', //this is the default value
+  allowList: [], //useful for stress tests
+})
+
+// INFO: Default 404 handler at startup before plugins are registered
+app.setNotFoundHandler({
+  preHandler: app.rateLimit()
+}, function (request, reply) {
+    reply.code(statusCodes.notFound)
 })
 
 // INFO: Server Health check route
