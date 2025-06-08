@@ -75,23 +75,14 @@ export const showAddresses = async (id: string) => {
 }
 
 export const editAddress = async (userId: string, addressId: string, data: EditAddressInterface) => {
-    const user = await prisma.user.findFirst({
-        where: {
-            id: userId
-        }
-    })
-
     const address = await prisma.address.findFirst({
         where: {
-            id: addressId
-        }
+            id: addressId,
+            userId
+        } 
     })
 
     if (!address) {
-        throw new Error("Endereço não encontrado.")
-    }
-
-    if (address.userId != userId) {
         throw new Error("Endereço não encontrado.")
     }
 
