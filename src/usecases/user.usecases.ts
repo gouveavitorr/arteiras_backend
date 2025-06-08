@@ -22,9 +22,9 @@ export interface UserSignInRequest {
 }
 
 export interface UserUpdateProfileRequest {
-    name: string,
-    cpf: string,
-    phoneNumber: string
+    name?: string,
+    cpf?: string,
+    phoneNumber?: string
 }
 
 export const signUp = async (data: UserSignupRequest) => {
@@ -153,15 +153,23 @@ export const updateUserProfile = async (id: string, data: UserUpdateProfileReque
         throw new Error("User not found");
     }
 
-    const verifiedCpf = new CPF(data?.cpf)
-    const verifiedPhoneNumber = new PhoneNumber(data?.phoneNumber)
+    let verifiedCpf
+    let verifiedPhoneNumber
+
+    if (data.cpf) {
+        verifiedCpf = new CPF(data.cpf)
+    }
+
+    if (data.phoneNumber) {
+        verifiedPhoneNumber = new PhoneNumber(data.phoneNumber)
+    }
 
     const updatedUser = await prisma.user.update({
         where: { id },
         data: {
             name: data?.name || user.name,
-            cpf: verifiedCpf.toString() || user.cpf,
-            phoneNumber: verifiedPhoneNumber.toString() || user.phoneNumber,
+            cpf: verifiedCpf?.toString() || user.cpf,
+            phoneNumber: verifiedPhoneNumber?.toString() || user.phoneNumber,
         },
     })
 
@@ -191,5 +199,4 @@ export const getUserOrders = async (id: string) => {
         throw new Error("Este usuário é admin e não pode possuir pedidos")
     }
     return orders
-
 }
