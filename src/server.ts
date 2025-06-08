@@ -3,6 +3,10 @@ import { productsRouter, /*ordersRouter,*/ cartRouter, storesRouter, categoriesR
 import { user } from "./routes/user.routes"
 import { statusCodes } from "./utils/types";
 import rateLimit from "@fastify/rate-limit";
+import cors from '@fastify/cors';
+
+const port = process.env.PORT as unknown as number
+const host = process.env.HOST as string // host 0.0.0.0 to expose the connection
 
 export const app: FastifyInstance = fastify({
   exposeHeadRoutes: true, // Default value
@@ -48,6 +52,12 @@ app.setNotFoundHandler({
     reply.code(statusCodes.notFound)
 })
 
+// INFO: Cross origin access to this API
+app.register(cors, {
+  origin: [`http://localhost:${port}`,'https://production-domain.com'],
+  methods: ["GET", "POST", "PUT", "DELETE"]
+})
+
 // INFO: Server Health check route
 app.get('/health', (_, reply) => reply.code(statusCodes.successful).send({ status: "OK" }))
 
@@ -63,8 +73,6 @@ app.register(cartRouter)
 app.register(addressesRouter)
 app.register(user)
 
-const port = process.env.PORT as unknown as number
-const host = process.env.HOST as string // host 0.0.0.0 to expose the connection
 
 app.listen({ host, port }, (err) => {
   if (err) {
