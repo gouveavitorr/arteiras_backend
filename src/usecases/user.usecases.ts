@@ -156,18 +156,13 @@ export const updateUserProfile = async (id: string, data: UserUpdateProfileReque
     let verifiedCpf
     let verifiedPhoneNumber
 
-    if (data.cpf) {
-        verifiedCpf = new CPF(data.cpf)
-    }
-
-    if (data.phoneNumber) {
-        verifiedPhoneNumber = new PhoneNumber(data.phoneNumber)
-    }
+    if (data.cpf) verifiedCpf = new CPF(data.cpf)
+    if (data.phoneNumber) verifiedPhoneNumber = new PhoneNumber(data.phoneNumber)
 
     const updatedUser = await prisma.user.update({
         where: { id },
         data: {
-            name: data?.name || user.name,
+            name: data.name || user.name,
             cpf: verifiedCpf?.toString() || user.cpf,
             phoneNumber: verifiedPhoneNumber?.toString() || user.phoneNumber,
         },
