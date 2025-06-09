@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify"
-import { signUp, edit, signIn, getUserProfile, updateUserProfile, getUserOrders } from "../usecases/user.usecases"
-import { UserSignupRequest, UserSignInRequest, UserEditRequest, } from "../schemas/users"
+import { signUp, editCredentials, signIn, getUserProfile, updateUserProfile, getUserOrders } from "../usecases/user.usecases"
+import { UserSignupRequest, UserSignInRequest, UserUpdateCredentialsRequest, } from "../schemas/users"
 import { statusCodes } from "../utils/types"
 
 export class UserController {
@@ -16,11 +16,11 @@ export class UserController {
         }
     }
 
-    async update(req: FastifyRequest, reply: FastifyReply) {
+    async updateCredentials(req: FastifyRequest, reply: FastifyReply) {
         try {
-            const userData = UserEditRequest.parse(req.body)
+            const userData = UserUpdateCredentialsRequest.parse(req.body)
             const { id } = req.user!
-            const user = await edit(id, userData)
+            const user = await editCredentials(id, userData)
 
             return reply.code(statusCodes.successful).send(user)
         } catch (error) {
@@ -52,9 +52,10 @@ export class UserController {
     async updateProfile(req: FastifyRequest, reply: FastifyReply) {
         try {
             const { id } = req.user!
-            const { cpf, phoneNumber }: any = req.body
+            const { name, cpf, phoneNumber }: any = req.body
 
             const updatedUser = await updateUserProfile(id, {
+                name,
                 cpf: cpf,
                 phoneNumber,
             })

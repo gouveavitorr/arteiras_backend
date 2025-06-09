@@ -10,11 +10,10 @@ export interface UserSignupRequest {
     password: string
 }
 
-export interface UserEditRequest {
-    name: string | null,
-    email: string | null,
-    password: string | null,
-    old_password: string | null
+export interface UserEditCredentialsRequest {
+    email?: string | null | undefined,
+    password?: string | null | undefined,
+    old_password?: string | null | undefined
 }
 
 export interface UserSignInRequest {
@@ -23,8 +22,9 @@ export interface UserSignInRequest {
 }
 
 export interface UserUpdateProfileRequest {
-    cpf: string,
-    phoneNumber: string
+    name?: string,
+    cpf?: string,
+    phoneNumber?: string
 }
 
 export const signUp = async (data: UserSignupRequest) => {
@@ -50,7 +50,7 @@ export const signUp = async (data: UserSignupRequest) => {
     return user
 }
 
-export const edit = async (id: string, data: UserEditRequest) => {
+export const editCredentials = async (id: string, data: UserEditCredentialsRequest) => {
     const user = await prisma.user.findFirst({
         where: {
             id
@@ -89,7 +89,6 @@ export const edit = async (id: string, data: UserEditRequest) => {
             id: user.id
         },
         data: {
-            name: data?.name || user.name,
             email: data?.email || user.email,
             password: user?.password
         }
@@ -154,14 +153,18 @@ export const updateUserProfile = async (id: string, data: UserUpdateProfileReque
         throw new Error("User not found");
     }
 
-    const verifiedCpf = new CPF(data?.cpf)
-    const verifiedPhoneNumber = new PhoneNumber(data?.phoneNumber)
+    let verifiedCpf
+    let verifiedPhoneNumber
+
+    if (data.cpf) verifiedCpf = new CPF(data.cpf)
+    if (data.phoneNumber) verifiedPhoneNumber = new PhoneNumber(data.phoneNumber)
 
     const updatedUser = await prisma.user.update({
         where: { id },
         data: {
-            cpf: verifiedCpf.toString() || user.cpf,
-            phoneNumber: verifiedPhoneNumber.toString() || user.phoneNumber,
+            name: data.name || user.name,
+            cpf: verifiedCpf?.toString() || user.cpf,
+            phoneNumber: verifiedPhoneNumber?.toString() || user.phoneNumber,
         },
     })
 
@@ -191,5 +194,4 @@ export const getUserOrders = async (id: string) => {
         throw new Error("Este usuário é admin e não pode possuir pedidos")
     }
     return orders
-
 }

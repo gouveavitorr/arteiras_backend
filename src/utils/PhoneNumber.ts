@@ -2,13 +2,13 @@ export class PhoneNumber {
     private value: string
 
     constructor(value: string){
-        if(!this.isValid()) throw new Error("Invalid phone number") 
         this.value = value
+        if(!this.isValid()) throw new Error("Invalid phone number") 
     }
 
     isValid() : boolean {
 
-        if(this.value.length != 11) return false
+        if(this.value?.length != 11) return false
 
         if(
             parseInt(this.value[0]) > 0

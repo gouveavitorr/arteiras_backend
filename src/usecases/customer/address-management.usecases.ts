@@ -3,33 +3,33 @@ import { prisma } from "../../lib/prisma"
 export interface AddressRequest {
     street: string,
     number: string,
-    neighborhood: string,
+    neighborhood?: string | null,
     city: string,
     state: string,
     country: string,
     postalCode: string,
     recipient: string,
-    reference: string,
-    userId: string,
+    reference?: string | null,
+    userId?: string,
 }
 
 export interface EditAddressInterface {
-    street: string,
-    number: string,
-    neighborhood: string,
-    city: string,
-    state: string,
-    country: string,
-    postalCode: string,
-    recipient: string,
-    reference: string,
-    userId: string,
+    street?: string | null,
+    number?: string | null,
+    neighborhood?: string | null,
+    city?: string | null,
+    state?: string | null,
+    country?: string | null,
+    postalCode?: string | null,
+    recipient?: string | null,
+    reference?: string | null,
+    userId?: string | null,
 }
 
-export const addNewAddress = async (data: AddressRequest) => {
+export const addNewAddress = async (userId: string, data: AddressRequest) => {
     const user = await prisma.user.findFirst({
         where: {
-            id: data.userId
+            id: userId
         }
     })
 
@@ -48,7 +48,7 @@ export const addNewAddress = async (data: AddressRequest) => {
             postalCode: data.postalCode,
             recipient: data.recipient,
             reference: data?.reference,
-            userId: user.id
+            userId
         }
     })
     return address
@@ -74,11 +74,12 @@ export const showAddresses = async (id: string) => {
     return addresses
 }
 
-export const editAddress = async (id: string, data: EditAddressInterface) => {
+export const editAddress = async (userId: string, addressId: string, data: EditAddressInterface) => {
     const address = await prisma.address.findFirst({
         where: {
-            id
-        }
+            id: addressId,
+            userId
+        } 
     })
 
     if (!address) {

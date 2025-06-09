@@ -3,13 +3,13 @@ export class CPF {
 
     constructor(value: string){
         
-        if(!this.isValid()) throw new Error("Invalid CPF") 
         this.value = value
+        if(!this.isValid()) throw new Error("Invalid CPF") 
     }
 
     private isValid() : boolean{
 
-        if(this.value.length != 11) return false
+        if(this.value?.length != 11) return false
  
         let firstVerifDigit = 0
         let j = 10
