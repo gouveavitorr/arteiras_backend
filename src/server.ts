@@ -1,9 +1,10 @@
 import { FastifyInstance, fastify } from "fastify";
 import { productsRouter, /*ordersRouter,*/ cartRouter, storesRouter, categoriesRouter, addressesRouter } from "./routes/customer"
 import { user } from "./routes/user.routes"
-import { statusCodes } from "./utils/types";
-import rateLimit from "@fastify/rate-limit";
-import cors from '@fastify/cors';
+import { statusCodes } from "./utils/types"
+import rateLimit from "@fastify/rate-limit"
+import cors from '@fastify/cors'
+import helmet from '@fastify/helmet'
 
 const port = process.env.PORT as unknown as number
 const host = process.env.HOST as string // host 0.0.0.0 to expose the connection
@@ -56,6 +57,10 @@ app.setNotFoundHandler({
 app.register(cors, {
   origin: [`http://localhost:${port}`,'https://production-domain.com'],
   methods: ["GET", "POST", "PUT", "DELETE"]
+})
+
+app.register(helmet, {
+  contentSecurityPolicy: false //TODO: this will need to be changed once we know our directives
 })
 
 // INFO: Server Health check route
