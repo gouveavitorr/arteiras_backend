@@ -5,6 +5,10 @@ import { statusCodes } from "./utils/types"
 import rateLimit from "@fastify/rate-limit"
 import cors from '@fastify/cors'
 import helmet from '@fastify/helmet'
+import passport from "@fastify/passport"
+import secureSession from 'fastify-secure-session'
+import fs from 'fs'
+import path from 'path'
 
 const port = process.env.PORT as unknown as number
 const host = process.env.HOST as string // host 0.0.0.0 to expose the connection
@@ -63,6 +67,13 @@ app.register(cors, {
 app.register(helmet, {
   contentSecurityPolicy: false //TODO: this will need to be changed once we know our directives
 })
+
+app.register(secureSession, {
+  key: fs.readFileSync(path.join(__dirname, 'secret-key'))
+})
+
+app.register(passport.initialize())
+app.register(passport.secureSession())
 
 // INFO: Server Health check route
 app.get('/health', (_, reply) => reply.code(statusCodes.successful).send({ status: "OK" }))
