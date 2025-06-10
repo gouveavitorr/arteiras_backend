@@ -59,6 +59,7 @@ app.register(cors, {
   methods: ["GET", "POST", "PUT", "DELETE"]
 })
 
+// INFO: Set of headers to tell the brower who can do what with our website
 app.register(helmet, {
   contentSecurityPolicy: false //TODO: this will need to be changed once we know our directives
 })
