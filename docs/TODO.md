@@ -1,4 +1,5 @@
 * NEXT TASKS:
+    - Já deixei como todo, mas precisamos configurar os diretórios no helmet assim que soubermos a estrutura final do frontend
     - Como implementar o processo de "esqueci a senha"
     - Classes utilitárias de CPF, phoneNumber, address etc para tratamento de dados
     - ID na URL e o resto no body - dependendo da entidade
