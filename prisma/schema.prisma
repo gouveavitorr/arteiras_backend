@@ -9,10 +9,11 @@ datasource db {
 
 model User {
   id             String          @id @default(cuid())
-  googleId       String          @unique
+  googleId       String?         @unique
   name           String
   email          String          @unique
   password       String
+  avatarUrl      String?
   role           Role            @default(CUSTOMER)
   cpf            String?         @unique
   phoneNumber    String?         @unique
