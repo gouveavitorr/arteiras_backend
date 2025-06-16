@@ -1,17 +1,21 @@
-import { FastifyRequest } from "fastify";
+import { FastifyRequest, FastifyError } from "fastify";
 import { verify } from "../configs/jwt";
-import { Payload } from "../utils/types";
+import { Payload, statusCodes } from "../utils/types";
 
 export async function isAuthenticated(req: FastifyRequest) {
     const rawToken = req.headers.authorization
     if (!rawToken) {
-        throw new Error("Token not provided")
+        const err = new Error("Token not provided") as FastifyError
+        err.statusCode = statusCodes.unauthorized
+        throw err
     }
 
     const tokenParts = rawToken.split("Bearer ")
 
     if (!tokenParts[1]) {
-        throw new Error("Invalid token")
+        const err = new Error("Invalid token") as FastifyError
+        err.statusCode = statusCodes.unauthorized
+        throw err
     }
 
     const accessToken = tokenParts[1]
@@ -19,7 +23,9 @@ export async function isAuthenticated(req: FastifyRequest) {
     const payload = await verify(accessToken)
 
     if (!payload) {
-        throw new Error("Invalid token")
+        const err = new Error("Invalid token") as FastifyError
+        err.statusCode = statusCodes.unauthorized
+        throw err
     }
 
     req.user = payload as Payload
