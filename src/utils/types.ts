@@ -25,5 +25,8 @@ declare module 'fastify' {
     interface FastifyRequest {
         user?: Payload
     }
+    interface FastifyError {
+        log?: string
+    }
 }
 
