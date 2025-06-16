@@ -1,7 +1,8 @@
 import { FastifyInstance, fastify } from "fastify";
-import { productsRouter, /*ordersRouter,*/ cartRouter, storesRouter, categoriesRouter, addressesRouter } from "./routes/customer"
+import { productsRouter, ordersRouter, cartRouter, storesRouter, categoriesRouter, addressesRouter } from "./routes/customer"
 import { user } from "./routes/user.routes"
 import { statusCodes } from "./utils/types";
+import { STATUS_CODES } from "http";
 
 export const app: FastifyInstance = fastify({
   exposeHeadRoutes: true, // Default value
@@ -26,10 +27,16 @@ export const app: FastifyInstance = fastify({
 
 
 // INFO: Upper-level error handler
-app.setErrorHandler(async error => {
-  app.log.warn(error.message)
+app.setErrorHandler(async (error, _request, reply) => {
+  app.log.warn(`${error.message}${error.log ? `\nlog: ${error.log}` : ""}`)
 
-  throw new Error(error.message)
+  const code = error.statusCode || statusCodes.serverError
+
+  reply.code(code).send({
+    code: code,
+    status: STATUS_CODES[code],
+    message: error.message
+  })
 })
 
 // INFO: Server Health check route
@@ -45,6 +52,7 @@ app.register(categoriesRouter)
 app.register(storesRouter)
 app.register(cartRouter)
 app.register(addressesRouter)
+app.register(ordersRouter)
 app.register(user)
 
 const port = process.env.PORT as unknown as number
