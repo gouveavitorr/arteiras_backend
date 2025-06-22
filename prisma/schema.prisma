@@ -22,21 +22,39 @@ model User {
 }
 
 model Product {
-  id          String      @id @default(cuid())
+  id          String            @id @default(cuid())
   name        String
   price       Float
   description String
   weight      Float
   size        Float
   quantity    Int
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
   storeId     String
   cartItems   CartItem[]
   images      Image[]
   OrderItems  OrderItem[]
-  store       Store       @relation(fields: [storeId], references: [id])
-  categories  Category[]  @relation("CategoryToProduct")
+  store       Store             @relation(fields: [storeId], references: [id])
+  categories  Category[]        @relation("CategoryToProduct")
+  discounts   ProductDiscount[]
+}
+
+model Discount {
+  id          String            @id @default(cuid())
+  description String
+  percentage  Int
+  products    ProductDiscount[]
+}
+
+model ProductDiscount {
+  product        Product  @relation(fields: [productId], references: [id])
+  productId      String
+  discount       Discount @relation(fields: [discountId], references: [id])
+  discountId     String
+  expirationDate DateTime
+
+  @@id([productId, discountId])
 }
 
 model Category {
