@@ -1,2 +1,48 @@
 node_modules
 .env
+
+# Compiled LaTeX files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex
+*.nav
+*.snm
+*.vrb
+
+# Editor backup files
+*~
+*.bak
+*.backup
+*.tmp
+*.swp
+*.swo
+
+# Output files
+*.dvi
+*.ps
+
+# Latexmk (build tool) output directory
+latex.out/
+
+# Overleaf specific
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+
+# VSCode/IDE config
+.vscode/
+.idea/

@@ -1,0 +1,138 @@
+\newcounter{frcount}
+\newcommand{\frid}{FR-\ifnum\value{frcount}<10 0\fi\arabic{frcount}}
+
+\newcommand{\fr}[3]{
+	\stepcounter{frcount}
+
+	\begin{longtable}{|p{3cm}|p{8cm}|p{3cm}|}
+		\hline
+		\rowcolor{headergray}
+		\textbf{ID} & \textbf{Name} & \textbf{Priority} \\
+
+		\hline
+		\frid & {#1} & {#2} \\
+
+		\hline
+		\multicolumn{3}{|p{14cm}|}{\textbf{Description:}{#3}} \\
+		\hline
+	\end{longtable}
+
+	\vspace{1em}
+}
+
+\section*{Functional Requirements}
+
+\fr{Login with credentials}{high}
+{
+The system shall allow users to log in using a username and password or Google account.
+}
+
+\fr{Reset password}{High}
+{
+The system shall allow authenticated users to reset their password via email.
+}
+
+\fr{Edit profile}{Medium}
+{
+The system shall allow authenticated users to edit their profiles, excluding credentials.
+}
+
+\fr{Delete profile}{Medium}
+{
+The system shall allow authenticated users to delete their profiles, should validate exclusion via email.
+}
+
+\fr{Add product to cart}{High}
+{
+The system shall allow authenticated users to add products to their shopping cart.
+}
+
+\fr{Remove product from cart}{High}
+{
+The system shall allow authenticated users to remove products from their shopping cart.
+}
+
+\fr{Process Payment}{High}
+{
+The system shall allow authenticated users to submit payment information to initiate payments through supported payment gateways.
+}
+
+\fr{Payment Validation}
+{
+The system shall validate and confirm payment status before order completion.
+}
+
+\fr{Order Tracking}{Medium}
+{
+The system shall allow authenticated users to view the status and details of their currently active orders.
+}
+
+\fr{Orders History}{Low}
+{
+The system shall allow authenticated users to view their purchase history.
+}
+
+\fr{Cancel Order}{Medium}
+{
+The system shall allow authenticated users to cancel their currently active orders.
+}
+
+\fr{Register products}{High}
+{
+The system shall allow administrators to register products.
+}
+
+\fr{Edit products}{High}
+{
+The system shall allow administrators to edit products.
+}
+
+\fr{Delete products}{High}
+{
+The system shall allow administrators to delete products.
+}
+
+\fr{Register stores}{High}
+{
+The system shall allow administrators to register stores.
+}
+
+\fr{Edit stores}{High}
+{
+The system shall allow administrators to edit stores.
+}
+
+\fr{Delete stores}{High}
+{
+The system shall allow administrators to delete stores.
+}
+
+\fr{Register categories}{High}
+{
+The system shall allow administrators to register categories.
+}
+
+\fr{Edit categories}{High}
+{
+The system shall allow administrators to edit categories.
+}
+
+\fr{Delete categories}{High}
+{
+The system shall allow administrators to delete categories.
+}
+
+\fr{Register product sale}{Medium}
+{
+The system shall allow administrators to register product sales with an optional discount value.
+}
+
+\fr{Remove product sale}{Medium}
+{
+The system shall allow administrators to remove product sales, which will remove all current links from products, even if the expiration date has not ended.
+}
+
+\fr{Link product sales}{Medium}
+{
+The system shall allow administrators to link product sales to products via registration or edit forms, with the ability to add a custom expiration date for each.
+}

@@ -1,0 +1,83 @@
+\newcounter{nfrcount}
+
+\newcommand{\nfrid}{NFR-\ifnum\value{nfrcount}<10 0\fi\arabic{nfrcount}}
+
+\newcommand{\nfr}[3]{
+	\stepcounter{nfrcount}
+	\begin{longtable}{|p{3cm}|p{8cm}|p{3cm}|}
+		\hline
+		\rowcolor{headergray}
+		\textbf{ID} & \textbf{Name} & \textbf{Category} \\
+
+		\hline
+		\nfrid & {#1} & {#2} \\
+
+		\hline
+		\multicolumn{3}{|p{14cm}|}{\textbf{Description:}{#3}} \\
+		\hline
+	\end{longtable}
+
+	\vspace{1em}
+}
+
+\section*{Non-Functional Requirements}
+
+\nfr{Response time under load}{Performance}
+{
+The system shall respond to user actions within 2 seconds under normal load.
+}
+
+\nfr{Request rate limit}{Security}
+{
+The system shall incorporate a rate limiting mechanism to protect against DoS attacks. This mechanism shall restrict each user to a maximum of 2 requests per second. Exceeding this limit shall result in temporary block.
+}
+
+\nfr{CORS Policy}{Security}
+{
+The system shall enforce a strict CORS policy, permitting access only from a predefined whitelist of domains and only for specified HTTP methods. Any requests originating from domains outside the whitelist or using unauthorized methods will be rejected.
+}
+
+\nfr{Data encryption}{Security}
+{
+The system shall encrypt any sensitive data, such as addresses, CPF, cellphone numbers or payment info, to comply with legal requirements.
+}
+
+\nfr{Data Sanitization}{Security}
+{
+The system shall validate and sanitize any external data to prevent injection attacks.
+}
+
+\nfr{HTTPS endpoints}{Security}
+{
+The system shall secure all endpoints using HTTPS.
+}
+
+\nfr{JWT Authentication}{Security}
+{
+The system shall use JWT-based authentication for protected endpoints.
+}
+
+\nfr{JWT expiration}{Security}
+{
+The system shall ensure JWT tokens expire properly and cannot be reused after logout.
+}
+
+\nfr{Logging}{Maintainability}
+{
+The system shall log all API requests and errors.
+}
+
+\nfr{Notification}{Maintainability}
+{
+The system shall notify administrator of critical failures or abnormal behaviors.
+}
+
+\nfr{RESTful design}{Maintainability}
+{
+The system should follow RESTful design principles.
+}
+
+\nfr{Documentation}{Maintainability}
+{
+The system should document all endpoints using Swagger.
+}
