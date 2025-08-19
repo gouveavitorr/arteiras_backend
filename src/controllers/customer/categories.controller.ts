@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { getCategories, getProductsByCategory, getStoresByCategory } from "../../usecases/customer/categories.usecases";
+import { getCategories, getCategoriesQty, getProductsByCategory, getStoresByCategory } from "../../usecases/customer/categories.usecases";
 import { statusCodes } from "../../utils/types";
 
 export class CategoriesController {
@@ -32,6 +32,15 @@ export class CategoriesController {
             return reply.code(statusCodes.successful).send(stores)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
+        }
+    }
+
+    async getCategoriesQty(_: FastifyRequest, reply: FastifyReply) {
+        try {
+            const qty = await getCategoriesQty()
+            return reply.code(statusCodes.successful).send(qty)
+        } catch (error) {
+            return reply.code(statusCodes.notFound).send(error)
         }
     }
 }

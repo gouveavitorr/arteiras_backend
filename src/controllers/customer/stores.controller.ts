@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { getStores, getStore } from "../../usecases/customer/stores.usecases";
+import { getStores, getStore, getStoresQty } from "../../usecases/customer/stores.usecases";
 import { statusCodes } from "../../utils/types";
 
 export class StoresController {
@@ -21,6 +21,15 @@ export class StoresController {
             return reply.code(statusCodes.successful).send(store);
         } catch (error) {
             throw new Error(`Erro: ${error}`)
+        }
+    }
+
+    async getStoresQty(_: FastifyRequest, reply: FastifyReply) {
+        try {
+            const qty = await getStoresQty()
+            return reply.code(statusCodes.successful).send(qty)
+        } catch (error) {
+            return reply.code(statusCodes.notFound).send(error)
         }
     }
 }

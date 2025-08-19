@@ -1,36 +1,85 @@
 import { prisma } from "../../lib/prisma"
 
-export const getPaginatedProducts = async (offset: number, limit: number) => {
+type ProductFilters = {
+    categoryId?: number
+    storeId?: number
+    priceMin?: number
+    priceMax?: number
+    weight?: number
+    size?: number
+    quantity?: number
+    search?: string
+}
 
-        const products = await prisma.product.findMany({
-            skip: offset,
-            take: limit,
-            orderBy: {
-                createdAt: 'desc',
-            }
-        })
-        
-        if (!products) {
-            throw new Error("Erro ao exibir produtos.")
-        }
+export const getPaginatedProducts = async (
+    offset: number,
+    limit: number,
+    filters: ProductFilters
+) => {
+    const where: any = {}
 
-        const totalItems = await prisma.product.count()
+    // if (filters.categoryId != null) {
+    //     where.categoryId = filters.categoryId
+    // }
 
-        return { products, totalItems }
-        
+    if (filters.storeId != null) {
+        where.storeId = filters.storeId
+    }
+
+    if (filters.priceMin != null || filters.priceMax != null) {
+        where.price = {}
+        if (filters.priceMin != null) where.price.gte = filters.priceMin
+        if (filters.priceMax != null) where.price.lte = filters.priceMax
+    }
+
+    if (filters.weight != null) {
+        where.weight = filters.weight
+    }
+
+    if (filters.size != null) {
+        where.size = filters.size
+    }
+
+    if (filters.quantity != null) {
+        where.quantity = filters.quantity
+    }
+
+    if (filters.search) {
+        where.OR = [
+            { name: { contains: filters.search, mode: "insensitive" } },
+            { description: { contains: filters.search, mode: "insensitive" } },
+        ]
+    }
+
+    const products = await prisma.product.findMany({
+        where,
+        skip: offset,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+    })
+
+    const totalItems = await prisma.product.count({ where })
+
+    return { products, totalItems }
+}
+
+export const getProductQty = async () => {
+    const totalProducts = await prisma.product.count()
+
+    return { totalProducts }
 }
 
 export const getProduct = async (productId: string) => {
 
-        const product = await prisma.product.findUnique({
-            where: {
-                id: productId,
-            }
-        })
-        if (!product) {
-            throw new Error("Produto não encontrado.")
+    const product = await prisma.product.findUnique({
+        where: {
+            id: productId,
         }
+    })
+    if (!product) {
+        throw new Error("Produto não encontrado.")
+    }
 
-        return product
+    return product
 
 }

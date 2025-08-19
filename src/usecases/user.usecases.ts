@@ -47,7 +47,16 @@ export const signUp = async (data: UserSignupRequest) => {
             password: hashedPassword
         }
     })
-    return user
+
+    const token = await sign({
+        id: user.id,
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+    })
+
+    return { user, token }
 }
 
 export const editCredentials = async (id: string, data: UserEditCredentialsRequest) => {
@@ -175,6 +184,23 @@ export const updateUserProfile = async (id: string, data: UserUpdateProfileReque
     return updatedUser;
 }
 
+export const getUserOrdersQty = async (id: string) => {
+    const verifiedUserId = await prisma.user.findUnique({
+        where: {
+            id,
+        },
+    })
+    const totalOrders = await prisma.order.count({
+        where: {
+            userId: verifiedUserId?.id,
+        },
+    })
+    if (verifiedUserId?.role == "ADMIN") {
+        throw new Error("Este usuário é admin e não pode possuir pedidos")
+    }
+    return { totalOrders }
+}
+
 export const getUserOrders = async (id: string) => {
 
     const verifiedUserId = await prisma.user.findUnique({
@@ -194,4 +220,48 @@ export const getUserOrders = async (id: string) => {
         throw new Error("Este usuário é admin e não pode possuir pedidos")
     }
     return orders
+}
+
+export const getUser = async (id: string) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            id
+        }
+    })
+
+    if (!user) {
+        throw new Error("User not found")
+    }
+
+    return {
+        id: user.id,
+        name: user.name,
+        role: user.role
+    }
+}
+
+export const deleteUser = async (id: string) => {
+    return await prisma.user.delete({
+        where: {
+            id
+        }
+    })
+}
+
+export const getUsersQty = async () => {
+    const totalUsers = await prisma.user.count()
+
+    return { totalUsers }
+}
+
+export const getUsers = async () => {
+    const users = await prisma.user.findMany()
+
+    return users.map(user => {
+        return {
+            id: user.id,
+            name: user.name,
+            role: user.role
+        }
+    })
 }

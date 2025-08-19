@@ -85,29 +85,14 @@ export const removeOneItemFromCart = async (id: string) => {
 }
 
 export const clearCart = async (id: string) => {
-
-    const user = await prisma.user.findFirst({
+    await prisma.cartItem.deleteMany({
         where: {
-            id
+            userId: id
         }
     })
-
-    if (!user) {
-        throw new Error("Cliente não encontrado.")
-    }
-    const item = await prisma.cartItem.findMany({
-        where: {
-            userId: user.id
-        }
-    })
-
-    for (let i = 0; i <= (await showCartItems(user.id)).length; i++) { //TODO: pensar um jeito mais eficiente
-        deleteItemFromCart(item[i].id)
-    }
 }
 
 export const showCartItems = async (id: string) => {
-
     const user = await prisma.user.findFirst({
         where: {
             id
@@ -119,6 +104,20 @@ export const showCartItems = async (id: string) => {
         }
     })
     return items
+}
+
+export const countItems = async (id: string) => {
+    const user = await prisma.user.findFirst({
+        where: {
+            id
+        }
+    })
+    const totalItems = await prisma.cartItem.count({
+        where: {
+            userId: user?.id
+        }
+    })
+    return { totalItems }
 }
 
 export const showUniqueCartItem = async (id: string) => {

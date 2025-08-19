@@ -26,4 +26,5 @@ export async function cartRouter(app: FastifyInstance) {
 
   app.delete("/cart/clear", { preHandler: isAuthenticated }, controller.clearCart)
   app.get("/cart/cartItems", { preHandler: isAuthenticated }, controller.showItems)
+  app.get("/cart/cartItems/qty", { preHandler: isAuthenticated }, controller.countItems)
 }

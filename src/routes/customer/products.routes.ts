@@ -6,4 +6,5 @@ const controller = new ProductListingController()
 export async function productsRouter(app: FastifyInstance) {
   app.get("/products", controller.getProducts)
   app.get("/products/:productId", controller.getProductItem)
+  app.get("/products/qty", controller.getProductQty)
 }
