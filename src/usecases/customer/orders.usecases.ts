@@ -99,7 +99,7 @@ export const checkout = async (userId: string, addressId?: string, paymentMethod
     const newOrder = {
         totalAmount: 0, // items qty or price
         deliveryExpenses: 0,
-        orderStatus: "PENDING_CART",
+        orderStatus: "PENDING",
         user: user,
         stores: [] as Store[],
         orderItems: [] as OrderItemCreateRequest[],
@@ -180,4 +180,19 @@ export const checkout = async (userId: string, addressId?: string, paymentMethod
     // })
 
     return createdOrder
+}
+
+// INFO: Cancel order from an authenticated user by ID
+export const cancelOrder = async (id: string, userId: string) => {
+    const order = await prisma.order.update({
+        data: {
+            orderStatus: "CANCELLED"
+        },
+        where: {
+            id,
+            userId
+        }
+    })
+
+    return order
 }

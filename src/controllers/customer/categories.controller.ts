@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { createCategory, getCategories, getCategoriesQty, getProductsByCategory, getStoresByCategory } from "../../usecases/customer/categories.usecases";
+import { createCategory, deleteCategory, getCategories, getCategoriesQty, getProductsByCategory, getStoresByCategory, updateCategory } from "../../usecases/customer/categories.usecases";
 import { statusCodes } from "../../utils/types";
-import { CategoryCreateRequest } from "../../schemas/categories";
+import { CategoryCreateRequest, CategoryUpdateRequest } from "../../schemas/categories";
 
 export class CategoriesController {
     async createCategory(req: FastifyRequest, reply: FastifyReply) {
@@ -54,6 +54,31 @@ export class CategoriesController {
             return reply.code(statusCodes.successful).send(qty)
         } catch (error) {
             return reply.code(statusCodes.notFound).send(error)
+        }
+    }
+
+    async updateCategory(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+        try {
+            const { id } = req.params
+            const categoryData = CategoryUpdateRequest.parse(req.body)
+
+            const category = await updateCategory(id, categoryData)
+
+            return reply.code(statusCodes.successful).send(category)
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
+        }
+    }
+
+    async deleteCategory(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+        try {
+            const { id } = req.params
+
+            await deleteCategory(id)
+
+            return reply.code(statusCodes.successful).send({ message: "Category deleted successfully" })
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
         }
     }
 }

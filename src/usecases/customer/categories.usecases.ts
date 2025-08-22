@@ -70,3 +70,23 @@ export const getCategoriesQty = async () => {
 
     return { totalCategories }
 }
+
+export const updateCategory = async (id: string, data: CategoryFormInterface) => {
+    const category = await prisma.category.update({
+        data,
+        where: {
+            id
+        }
+    })
+    return category
+}
+
+
+export const deleteCategory = async (id: string) => {
+    const category = await prisma.category.delete({
+        where: {
+            id
+        }
+    })
+    return category
+}

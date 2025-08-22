@@ -108,3 +108,23 @@ export const createProduct = async (data: ProductFormInterface) => {
     })
     return product
 }
+
+export const updateProduct = async (id: string, data: ProductFormInterface) => {
+    const product = await prisma.product.update({
+        data,
+        where: {
+            id
+        }
+    })
+    return product
+}
+
+
+export const deleteProduct = async (id: string) => {
+    const product = await prisma.product.delete({
+        where: {
+            id
+        }
+    })
+    return product
+}

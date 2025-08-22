@@ -1,17 +1,16 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { getOrders, getOrder, checkout } from "../../usecases/customer/orders.usecases"
+import { getOrders, getOrder, checkout, cancelOrder } from "../../usecases/customer/orders.usecases"
 import { statusCodes } from "../../utils/types";
 
 export class OrdersController {
     async getOrders(req: FastifyRequest, reply: FastifyReply) {
         try {
-
             const { id } = req.user!
             const orders = await getOrders(id)
             return reply.code(statusCodes.successful).send(orders)
 
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            throw error
         }
     }
 
@@ -22,9 +21,12 @@ export class OrdersController {
 
             const order = await getOrder(orderId, user.id);
 
+            if (!order)
+                return reply.code(statusCodes.notFound).send({ message: "Order not found" });
+
             return reply.code(statusCodes.successful).send(order);
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            throw error
         }
     }
 
@@ -37,7 +39,20 @@ export class OrdersController {
 
             return reply.code(statusCodes.successful).send(order);
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            throw error
+        }
+    }
+
+    async cancelOrder(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+        try {
+            const { id: userId } = req.user!
+            const { id } = req.params;
+
+            await cancelOrder(id, userId);
+
+            return reply.code(statusCodes.successful).send({ message: "Order successfully cancelled" });
+        } catch (error) {
+            throw error
         }
     }
 }

@@ -48,7 +48,6 @@ export const updateStore = async (id: string, data: StoreFormInterface) => {
             id
         }
     })
-
     return store
 }
 
@@ -59,6 +58,5 @@ export const deleteStore = async (id: string) => {
             id
         }
     })
-
     return store
 }

@@ -63,12 +63,12 @@ app.get('/favicon.ico', (_, reply) => reply.code(statusCodes.noContent))
 // INFO: Routes
 app.register(async (router) => {
   // router.register(customerProfile)
-  router.register(productsRouter)
-  router.register(categoriesRouter)
-  router.register(storesRouter)
-  router.register(cartRouter)
-  router.register(addressesRouter)
-  router.register(ordersRouter)
+  router.register(productsRouter, { prefix: "/products" })
+  router.register(categoriesRouter, { prefix: "/categories" })
+  router.register(storesRouter, { prefix: "/stores" })
+  router.register(cartRouter, { prefix: "/cart" })
+  router.register(addressesRouter, { prefix: "/addresses" })
+  router.register(ordersRouter, { prefix: "/orders" })
   router.register(user)
 
   // INFO: Server Health check route

@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { createProduct, getPaginatedProducts, getProduct, getProductQty } from "../../usecases/customer/product-listing.usecases";
+import { createProduct, deleteProduct, getPaginatedProducts, getProduct, getProductQty, updateProduct } from "../../usecases/customer/product-listing.usecases";
 import { statusCodes } from "../../utils/types";
-import { ProductCreateRequest } from "../../schemas/products";
+import { ProductCreateRequest, ProductUpdateRequest } from "../../schemas/products";
 
 export class ProductListingController {
     async getProducts(req: FastifyRequest<{
@@ -81,6 +81,31 @@ export class ProductListingController {
             return reply.code(statusCodes.successful).send(product)
         } catch (error) {
             return reply.code(statusCodes.serverError).send(error)
+        }
+    }
+
+    async updateProduct(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+        try {
+            const { id } = req.params
+            const productData = ProductUpdateRequest.parse(req.body)
+
+            const product = await updateProduct(id, productData)
+
+            return reply.code(statusCodes.successful).send(product)
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async deleteProduct(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+        try {
+            const { id } = req.params
+
+            await deleteProduct(id)
+
+            return reply.code(statusCodes.successful).send({ message: "Product deleted successfully" })
+        } catch (error) {
+            throw error
         }
     }
 }

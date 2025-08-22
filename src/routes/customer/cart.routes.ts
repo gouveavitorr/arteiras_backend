@@ -7,30 +7,30 @@ const controller = new CartOperationsController()
 
 export async function cartRouter(app: FastifyInstance) {
   app.post<{ Body: CartItemRequest }>(
-    "/cart/add",
+    "/add",
     { preHandler: isAuthenticated },
     controller.addItem
   )
 
   app.put<{ Body: CartItemUpdate }>(
-    "/cart",
+    "/",
     { preHandler: isAuthenticated },
     controller.updateItem
   )
 
   app.delete<{ Params: { cartItemId: string } }>(
-    "/cart/delete/:cartItemId",
+    "/delete/:cartItemId",
     { preHandler: isAuthenticated },
     controller.deleteItem
   )
 
   app.delete<{ Params: { cartItemId: string } }>(
-    "/cart/remove/:cartItemId",
+    "/remove/:cartItemId",
     { preHandler: isAuthenticated },
     controller.removeItem
   )
 
-  app.delete("/cart/clear", { preHandler: isAuthenticated }, controller.clearCart)
-  app.get("/cart/cartItems", { preHandler: isAuthenticated }, controller.showItems)
-  app.get("/cart/cartItems/qty", { preHandler: isAuthenticated }, controller.countItems)
+  app.delete("/clear", { preHandler: isAuthenticated }, controller.clearCart)
+  app.get("/cartItems", { preHandler: isAuthenticated }, controller.showItems)
+  app.get("/cartItems/qty", { preHandler: isAuthenticated }, controller.countItems)
 }
