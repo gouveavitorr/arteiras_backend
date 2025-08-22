@@ -7,6 +7,8 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts"
   },
@@ -20,6 +22,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "argon2": "^0.41.1",
     "fastify": "^5.5.0",
+    "fastify-plugin": "^5.0.1",
     "jsonwebtoken": "^9.0.2",
     "pino-pretty": "^13.0.0",
     "zod": "^3.24.1"

@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma"
+import { app } from "../../server";
 
 export interface CartItemRequest {
     productId: string,
@@ -12,7 +12,7 @@ export interface CartItemUpdate {
 }
 
 export const addItemToCart = async (data: CartItemRequest) => {
-    const product = await prisma.product.findFirst({
+    const product = await app.prisma.product.findFirst({
         where: {
             id: data.productId
         }
@@ -22,7 +22,7 @@ export const addItemToCart = async (data: CartItemRequest) => {
         throw new Error("Produto não encontrado.")
     }
 
-    const user = await prisma.user.findFirst({
+    const user = await app.prisma.user.findFirst({
         where: {
             id: data.userId
         }
@@ -32,7 +32,7 @@ export const addItemToCart = async (data: CartItemRequest) => {
         throw new Error("Usuário não encontrado.")
     }
 
-    const cartItemExists = await prisma.cartItem.findFirst({
+    const cartItemExists = await app.prisma.cartItem.findFirst({
         where: {
             productId: data.productId,
             userId: data.userId
@@ -40,7 +40,7 @@ export const addItemToCart = async (data: CartItemRequest) => {
     })
 
     if (cartItemExists) {
-        const updatedItem = await prisma.cartItem.update({
+        const updatedItem = await app.prisma.cartItem.update({
             where: {
                 id: cartItemExists.id
             },
@@ -52,7 +52,7 @@ export const addItemToCart = async (data: CartItemRequest) => {
         })
         return updatedItem
     } else {
-        const item = await prisma.cartItem.create({
+        const item = await app.prisma.cartItem.create({
             data: {
                 productId: data.productId,
                 userId: data.userId,
@@ -65,7 +65,7 @@ export const addItemToCart = async (data: CartItemRequest) => {
 }
 
 export const deleteItemFromCart = async (id: string) => {
-    return await prisma.cartItem.delete({
+    return await app.prisma.cartItem.delete({
         where: {
             id
         }
@@ -73,7 +73,7 @@ export const deleteItemFromCart = async (id: string) => {
 }
 
 export const removeOneItemFromCart = async (id: string) => {
-    const item = await prisma.cartItem.findFirst({
+    const item = await app.prisma.cartItem.findFirst({
         where: {
             id
         }
@@ -89,7 +89,7 @@ export const removeOneItemFromCart = async (id: string) => {
 }
 
 export const clearCart = async (id: string) => {
-    await prisma.cartItem.deleteMany({
+    await app.prisma.cartItem.deleteMany({
         where: {
             userId: id
         }
@@ -97,12 +97,12 @@ export const clearCart = async (id: string) => {
 }
 
 export const showCartItems = async (id: string) => {
-    const user = await prisma.user.findFirst({
+    const user = await app.prisma.user.findFirst({
         where: {
             id
         }
     })
-    const items = await prisma.cartItem.findMany({
+    const items = await app.prisma.cartItem.findMany({
         where: {
             userId: user?.id
         }
@@ -111,12 +111,12 @@ export const showCartItems = async (id: string) => {
 }
 
 export const countItems = async (id: string) => {
-    const user = await prisma.user.findFirst({
+    const user = await app.prisma.user.findFirst({
         where: {
             id
         }
     })
-    const totalItems = await prisma.cartItem.count({
+    const totalItems = await app.prisma.cartItem.count({
         where: {
             userId: user?.id
         }
@@ -125,7 +125,7 @@ export const countItems = async (id: string) => {
 }
 
 export const updateItem = async (id: string, userId: string, quantity: number) => {
-    const item = await prisma.cartItem.update({
+    const item = await app.prisma.cartItem.update({
         data: {
             quantity
         },
@@ -140,7 +140,7 @@ export const updateItem = async (id: string, userId: string, quantity: number) =
 
 export const showUniqueCartItem = async (id: string) => {
 
-    const item = await prisma.cartItem.findFirst({
+    const item = await app.prisma.cartItem.findFirst({
         where: {
             id
         }

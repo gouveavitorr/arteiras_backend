@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma"
+import { app } from "../../server";
 
 export interface AddressRequest {
     street: string,
@@ -27,7 +27,7 @@ export interface EditAddressInterface {
 }
 
 export const addNewAddress = async (userId: string, data: AddressRequest) => {
-    const user = await prisma.user.findFirst({
+    const user = await app.prisma.user.findFirst({
         where: {
             id: userId
         }
@@ -37,7 +37,7 @@ export const addNewAddress = async (userId: string, data: AddressRequest) => {
         throw new Error("Usuário não encontrado.")
     }
 
-    const address = await prisma.address.create({
+    const address = await app.prisma.address.create({
         data: {
             street: data.street,
             number: data.number,
@@ -55,7 +55,7 @@ export const addNewAddress = async (userId: string, data: AddressRequest) => {
 }
 
 export const showAddresses = async (id: string) => {
-    const user = await prisma.user.findFirst({
+    const user = await app.prisma.user.findFirst({
         where: {
             id
         }
@@ -65,7 +65,7 @@ export const showAddresses = async (id: string) => {
         throw new Error("Usuário não encontrado.")
     }
 
-    const addresses = await prisma.address.findMany({
+    const addresses = await app.prisma.address.findMany({
         where: {
             userId: user.id
         }
@@ -75,18 +75,18 @@ export const showAddresses = async (id: string) => {
 }
 
 export const editAddress = async (userId: string, addressId: string, data: EditAddressInterface) => {
-    const address = await prisma.address.findFirst({
+    const address = await app.prisma.address.findFirst({
         where: {
             id: addressId,
             userId
-        } 
+        }
     })
 
     if (!address) {
         throw new Error("Endereço não encontrado.")
     }
 
-    const updatedAddress = await prisma.address.update({
+    const updatedAddress = await app.prisma.address.update({
         where: {
             id: address.id
         },
@@ -107,7 +107,7 @@ export const editAddress = async (userId: string, addressId: string, data: EditA
 }
 
 export const deleteAddress = async (id: string) => {
-    return await prisma.address.delete({
+    return await app.prisma.address.delete({
         where: {
             id
         }

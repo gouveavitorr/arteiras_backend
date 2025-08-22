@@ -1,16 +1,16 @@
-import { prisma } from "../../lib/prisma"
+import { app } from "../../server";
 
 export interface CategoryFormInterface {
     name: string
 }
 
 export const getCategories = async () => {
-    const categories = await prisma.category.findMany()
+    const categories = await app.prisma.category.findMany()
     return categories
 }
 
 export const createCategory = async (data: CategoryFormInterface) => {
-    const category = await prisma.category.create({
+    const category = await app.prisma.category.create({
         data
     })
     return category
@@ -18,7 +18,7 @@ export const createCategory = async (data: CategoryFormInterface) => {
 
 
 export const getProductsByCategory = async (categoryId: string) => {
-    const category = await prisma.category.findFirst({
+    const category = await app.prisma.category.findFirst({
         where: {
             id: categoryId
         }
@@ -27,7 +27,7 @@ export const getProductsByCategory = async (categoryId: string) => {
     if (!category) {
         throw new Error("Categoria não encontrada.")
     }
-    const products = await prisma.product.findMany({
+    const products = await app.prisma.product.findMany({
         where: {
             categories: {
                 some: {
@@ -41,7 +41,7 @@ export const getProductsByCategory = async (categoryId: string) => {
 }
 
 export const getStoresByCategory = async (categoryId: string) => {
-    const category = await prisma.category.findFirst({
+    const category = await app.prisma.category.findFirst({
         where: {
             id: categoryId
         }
@@ -51,7 +51,7 @@ export const getStoresByCategory = async (categoryId: string) => {
         throw new Error("Categoria não encontrada.")
     }
 
-    const stores = await prisma.store.findMany({
+    const stores = await app.prisma.store.findMany({
         where: {
             categories: {
                 some: {
@@ -66,13 +66,13 @@ export const getStoresByCategory = async (categoryId: string) => {
 
 
 export const getCategoriesQty = async () => {
-    const totalCategories = await prisma.category.count()
+    const totalCategories = await app.prisma.category.count()
 
     return { totalCategories }
 }
 
 export const updateCategory = async (id: string, data: CategoryFormInterface) => {
-    const category = await prisma.category.update({
+    const category = await app.prisma.category.update({
         data,
         where: {
             id
@@ -83,7 +83,7 @@ export const updateCategory = async (id: string, data: CategoryFormInterface) =>
 
 
 export const deleteCategory = async (id: string) => {
-    const category = await prisma.category.delete({
+    const category = await app.prisma.category.delete({
         where: {
             id
         }

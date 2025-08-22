@@ -6,6 +6,8 @@ import { user } from "./routes/user.routes"
 import { statusCodes } from "./utils/types";
 import { STATUS_CODES } from "http";
 
+import PrismaPlugin from "./lib/prisma"
+
 export const app: FastifyInstance = fastify({
   exposeHeadRoutes: true, // Default value
   trustProxy: 1,
@@ -27,6 +29,8 @@ export const app: FastifyInstance = fastify({
     }
   }
 });
+
+app.register(PrismaPlugin);
 
 
 // INFO: Upper-level error handler
@@ -80,9 +84,20 @@ app.register(async (router) => {
 const port = process.env.PORT as unknown as number
 const host = process.env.HOST as string // host 0.0.0.0 to expose the connection
 
-app.listen({ host, port }, (err) => {
-  if (err) {
+const start = async () => {
+  try {
+    await app.listen({ host, port });
+  } catch (err) {
     app.log.error(err);
     process.exit(1);
   }
-});
+};
+
+start();
+
+process.on('uncaughtException', function(error) {
+  app.log.fatal('received uncaught exception, shutting down', { error })
+  app.close(() => {
+    process.exit(0);
+  });
+})

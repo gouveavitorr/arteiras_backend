@@ -62,13 +62,13 @@ export class ProductListingController {
         }
     }
 
-    async getProductItem(req: FastifyRequest, reply: FastifyReply) {
+    async getProductItem(req: FastifyRequest<{ Params: { productId: string } }>, reply: FastifyReply) {
         try {
             const { productId } = req.params
             const product = await getProduct(productId)
             return reply.code(statusCodes.successful).send(product)
         } catch (error) {
-            return reply.code(statusCodes.notFound).send(error.message)
+            throw error
         }
     }
 

@@ -1,4 +1,4 @@
-import { Role } from '@prisma/client'
+import { PrismaClient, Role } from '@prisma/client'
 
 export interface Payload {
     id: string,
@@ -27,6 +27,9 @@ declare module 'fastify' {
     }
     interface FastifyError {
         log?: string
+    }
+    interface FastifyInstance {
+        prisma: PrismaClient;
     }
 }
 

@@ -1,5 +1,6 @@
+import { app } from "../../server";
+
 import { Address, orderStatus, PaymentMethod, Product, Store, User } from "@prisma/client"
-import { prisma } from "../../lib/prisma"
 import { FastifyError } from "fastify"
 import { statusCodes } from "../../utils/types"
 
@@ -25,7 +26,7 @@ export interface OrderCreateRequest {
 
 // INFO: Get all orders from an authenticated user
 export const getOrders = async (userId: string) => {
-    const orders = await prisma.order.findMany({
+    const orders = await app.prisma.order.findMany({
         where: {
             userId
         },
@@ -43,7 +44,7 @@ export const getOrders = async (userId: string) => {
 
 // INFO: Get order from an authenticated user by ID
 export const getOrder = async (id: string, userId: string) => {
-    const order = await prisma.order.findFirst({
+    const order = await app.prisma.order.findFirst({
         where: {
             id,
             userId
@@ -55,7 +56,7 @@ export const getOrder = async (id: string, userId: string) => {
 
 // INFO: Checkout user cart items to an order
 export const checkout = async (userId: string, addressId?: string, paymentMethodId?: string) => {
-    const response = await prisma.user.findFirst({
+    const response = await app.prisma.user.findFirst({
         where: {
             id: userId,
         },
@@ -129,7 +130,7 @@ export const checkout = async (userId: string, addressId?: string, paymentMethod
     })
 
     // FIX: Check how to make nested create in Prisma
-    const createdOrder = await prisma.order.create({
+    const createdOrder = await app.prisma.order.create({
         data: {
             totalAmount: newOrder.totalAmount,
             deliveryExpenses: newOrder.deliveryExpenses,
@@ -169,7 +170,7 @@ export const checkout = async (userId: string, addressId?: string, paymentMethod
     })
 
     // NOTE: Delete parsed cart items or use a flag to set it as purchased
-    // prisma.cartItem.deleteMany({
+    // app.prisma.cartItem.deleteMany({
     //     where: {
     //         id: {
     //             in: cartItems.map(item =>
@@ -184,7 +185,7 @@ export const checkout = async (userId: string, addressId?: string, paymentMethod
 
 // INFO: Cancel order from an authenticated user by ID
 export const cancelOrder = async (id: string, userId: string) => {
-    const order = await prisma.order.update({
+    const order = await app.prisma.order.update({
         data: {
             orderStatus: "CANCELLED"
         },

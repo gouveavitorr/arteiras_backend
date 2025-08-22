@@ -1,5 +1,6 @@
+import { app } from "../server";
+
 import { sign } from "../configs/jwt";
-import { prisma } from "../lib/prisma";
 import argon2 from "argon2"
 import { CPF } from "../utils/cpf"
 import { PhoneNumber } from "../utils/PhoneNumber";
@@ -28,7 +29,7 @@ export interface UserUpdateProfileRequest {
 }
 
 export const signUp = async (data: UserSignupRequest) => {
-    const checkIfUserExists = await prisma.user.findFirst({
+    const checkIfUserExists = await app.prisma.user.findFirst({
         where: {
             email: data.email
         }
@@ -40,7 +41,7 @@ export const signUp = async (data: UserSignupRequest) => {
 
     const hashedPassword = await argon2.hash(data.password);
 
-    const user = await prisma.user.create({
+    const user = await app.prisma.user.create({
         data: {
             name: data.name,
             email: data.email,
@@ -60,7 +61,7 @@ export const signUp = async (data: UserSignupRequest) => {
 }
 
 export const editCredentials = async (id: string, data: UserEditCredentialsRequest) => {
-    const user = await prisma.user.findFirst({
+    const user = await app.prisma.user.findFirst({
         where: {
             id
         }
@@ -69,7 +70,7 @@ export const editCredentials = async (id: string, data: UserEditCredentialsReque
         throw new Error("Usuário não encontrado.")
     }
 
-    const userWithUpdatedEmail = await prisma.user.findFirst({
+    const userWithUpdatedEmail = await app.prisma.user.findFirst({
         where: {
             email: user.email
         }
@@ -93,7 +94,7 @@ export const editCredentials = async (id: string, data: UserEditCredentialsReque
         }
     }
 
-    const updatedUser = await prisma.user.update({
+    const updatedUser = await app.prisma.user.update({
         where: {
             id: user.id
         },
@@ -106,7 +107,7 @@ export const editCredentials = async (id: string, data: UserEditCredentialsReque
 }
 
 export const signIn = async (data: UserSignInRequest) => {
-    const user = await prisma.user.findFirst({
+    const user = await app.prisma.user.findFirst({
         where: {
             email: data.email
         }
@@ -135,7 +136,7 @@ export const signIn = async (data: UserSignInRequest) => {
 
 export const getUserProfile = async (id: string) => {
 
-    const user = await prisma.user.findFirst({
+    const user = await app.prisma.user.findFirst({
         where: {
             id,
         },
@@ -152,7 +153,7 @@ export const getUserProfile = async (id: string) => {
 }
 
 export const updateUserProfile = async (id: string, data: UserUpdateProfileRequest) => {
-    const user = await prisma.user.findUnique({
+    const user = await app.prisma.user.findUnique({
         where: {
             id,
         },
@@ -168,7 +169,7 @@ export const updateUserProfile = async (id: string, data: UserUpdateProfileReque
     if (data.cpf) verifiedCpf = new CPF(data.cpf)
     if (data.phoneNumber) verifiedPhoneNumber = new PhoneNumber(data.phoneNumber)
 
-    const updatedUser = await prisma.user.update({
+    const updatedUser = await app.prisma.user.update({
         where: { id },
         data: {
             name: data.name || user.name,
@@ -185,12 +186,12 @@ export const updateUserProfile = async (id: string, data: UserUpdateProfileReque
 }
 
 export const getUserOrdersQty = async (id: string) => {
-    const verifiedUserId = await prisma.user.findUnique({
+    const verifiedUserId = await app.prisma.user.findUnique({
         where: {
             id,
         },
     })
-    const totalOrders = await prisma.order.count({
+    const totalOrders = await app.prisma.order.count({
         where: {
             userId: verifiedUserId?.id,
         },
@@ -203,12 +204,12 @@ export const getUserOrdersQty = async (id: string) => {
 
 export const getUserOrders = async (id: string) => {
 
-    const verifiedUserId = await prisma.user.findUnique({
+    const verifiedUserId = await app.prisma.user.findUnique({
         where: {
             id,
         },
     })
-    const orders = await prisma.order.findMany({
+    const orders = await app.prisma.order.findMany({
         where: {
             userId: verifiedUserId?.id,
         },
@@ -223,7 +224,7 @@ export const getUserOrders = async (id: string) => {
 }
 
 export const getUser = async (id: string) => {
-    const user = await prisma.user.findUnique({
+    const user = await app.prisma.user.findUnique({
         where: {
             id
         }
@@ -241,7 +242,7 @@ export const getUser = async (id: string) => {
 }
 
 export const deleteUser = async (id: string) => {
-    return await prisma.user.delete({
+    return await app.prisma.user.delete({
         where: {
             id
         }
@@ -249,13 +250,13 @@ export const deleteUser = async (id: string) => {
 }
 
 export const getUsersQty = async () => {
-    const totalUsers = await prisma.user.count()
+    const totalUsers = await app.prisma.user.count()
 
     return { totalUsers }
 }
 
 export const getUsers = async () => {
-    const users = await prisma.user.findMany()
+    const users = await app.prisma.user.findMany()
 
     return users.map(user => {
         return {

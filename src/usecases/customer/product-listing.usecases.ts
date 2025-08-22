@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma"
+import { app } from "../../server";
 
 type ProductFilters = {
     categoryId?: number
@@ -62,27 +62,27 @@ export const getPaginatedProducts = async (
         ]
     }
 
-    const products = await prisma.product.findMany({
+    const products = await app.prisma.product.findMany({
         where,
         skip: offset,
         take: limit,
         orderBy: { createdAt: "desc" },
     })
 
-    const totalItems = await prisma.product.count({ where })
+    const totalItems = await app.prisma.product.count({ where })
 
     return { products, totalItems }
 }
 
 export const getProductQty = async () => {
-    const totalProducts = await prisma.product.count()
+    const totalProducts = await app.prisma.product.count()
 
     return { totalProducts }
 }
 
 export const getProduct = async (productId: string) => {
 
-    const product = await prisma.product.findUnique({
+    const product = await app.prisma.product.findUnique({
         where: {
             id: productId,
         }
@@ -98,7 +98,7 @@ export const getProduct = async (productId: string) => {
 export const createProduct = async (data: ProductFormInterface) => {
     const { categoryId, ...productData } = data
 
-    const product = await prisma.product.create({
+    const product = await app.prisma.product.create({
         data: {
             ...productData,
             categories: {
@@ -110,7 +110,7 @@ export const createProduct = async (data: ProductFormInterface) => {
 }
 
 export const updateProduct = async (id: string, data: ProductFormInterface) => {
-    const product = await prisma.product.update({
+    const product = await app.prisma.product.update({
         data,
         where: {
             id
@@ -121,7 +121,7 @@ export const updateProduct = async (id: string, data: ProductFormInterface) => {
 
 
 export const deleteProduct = async (id: string) => {
-    const product = await prisma.product.delete({
+    const product = await app.prisma.product.delete({
         where: {
             id
         }

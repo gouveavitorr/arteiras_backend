@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma"
+import { app } from "../../server";
 
 export interface StoreFormInterface {
     name: string,
@@ -11,12 +11,12 @@ export interface StoreFormInterface {
 }
 
 export const getStores = async () => {
-    const stores = await prisma.store.findMany()
+    const stores = await app.prisma.store.findMany()
     return stores
 }
 
 export const getStore = async (storeId: string) => {
-    const store = await prisma.store.findFirst({
+    const store = await app.prisma.store.findFirst({
         where: {
             id: storeId
         }
@@ -29,20 +29,20 @@ export const getStore = async (storeId: string) => {
 }
 
 export const getStoresQty = async () => {
-    const totalStores = await prisma.store.count()
+    const totalStores = await app.prisma.store.count()
 
     return { totalStores }
 }
 
 export const createStore = async (data: StoreFormInterface) => {
-    const store = await prisma.store.create({
+    const store = await app.prisma.store.create({
         data
     })
     return store
 }
 
 export const updateStore = async (id: string, data: StoreFormInterface) => {
-    const store = await prisma.store.update({
+    const store = await app.prisma.store.update({
         data,
         where: {
             id
@@ -53,7 +53,7 @@ export const updateStore = async (id: string, data: StoreFormInterface) => {
 
 
 export const deleteStore = async (id: string) => {
-    const store = await prisma.store.delete({
+    const store = await app.prisma.store.delete({
         where: {
             id
         }

@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma"
+import { app } from "../../server";
 
 export interface CustomOrderFormInterface {
     title: string,
@@ -8,12 +8,12 @@ export interface CustomOrderFormInterface {
 }
 
 export const getCustomOrders = async () => {
-    const customOrders = await prisma.customOrder.findMany()
+    const customOrders = await app.prisma.customOrder.findMany()
     return customOrders
 }
 
 export const createCustomOrder = async (userId: string, data: CustomOrderFormInterface) => {
-    const customOrder = await prisma.customOrder.create({
+    const customOrder = await app.prisma.customOrder.create({
         data: {
             ...data,
             userId,
@@ -27,7 +27,7 @@ export const createCustomOrder = async (userId: string, data: CustomOrderFormInt
 }
 
 export const getCustomOrderById = async (id: string) => {
-    const customOrder = await prisma.customOrder.findFirst({
+    const customOrder = await app.prisma.customOrder.findFirst({
         where: {
             id
         }
@@ -36,7 +36,7 @@ export const getCustomOrderById = async (id: string) => {
 }
 
 export const getCustomOrdersByUserId = async (userId: string) => {
-    const customOrders = await prisma.customOrder.findMany({
+    const customOrders = await app.prisma.customOrder.findMany({
         where: {
             userId
         }
@@ -45,7 +45,7 @@ export const getCustomOrdersByUserId = async (userId: string) => {
 }
 
 export const getCustomOrderByIdUserId = async (id: string, userId: string) => {
-    const customOrder = await prisma.customOrder.findFirst({
+    const customOrder = await app.prisma.customOrder.findFirst({
         where: {
             id,
             userId
@@ -55,13 +55,13 @@ export const getCustomOrderByIdUserId = async (id: string, userId: string) => {
 }
 
 export const getCustomOrdersQty = async () => {
-    const totalCustomOrders = await prisma.customOrder.count()
+    const totalCustomOrders = await app.prisma.customOrder.count()
 
     return { totalCustomOrders }
 }
 
 export const updateCustomOrder = async (id: string, data: CustomOrderFormInterface) => {
-    const customOrder = await prisma.customOrder.update({
+    const customOrder = await app.prisma.customOrder.update({
         data,
         where: {
             id
@@ -72,7 +72,7 @@ export const updateCustomOrder = async (id: string, data: CustomOrderFormInterfa
 
 
 export const deleteCustomOrder = async (id: string) => {
-    const customOrder = await prisma.customOrder.delete({
+    const customOrder = await app.prisma.customOrder.delete({
         where: {
             id
         }

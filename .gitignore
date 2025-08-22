@@ -1,5 +1,6 @@
 node_modules
 .env
+dist
 
 # Compiled LaTeX files
 *.aux
