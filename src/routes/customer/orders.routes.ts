@@ -12,4 +12,10 @@ export async function ordersRouter(app: FastifyInstance) {
     { preHandler: isAuthenticated },
     controller.getOrder
   )
+
+  app.post<{ Body: { addressId: string, paymentMethodId: string } }>(
+    "/checkout",
+    { preHandler: isAuthenticated },
+    controller.checkoutHandler
+  )
 }
