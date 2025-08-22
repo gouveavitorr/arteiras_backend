@@ -1,9 +1,21 @@
 import { prisma } from "../../lib/prisma"
 
+export interface CategoryFormInterface {
+    name: string
+}
+
 export const getCategories = async () => {
     const categories = await prisma.category.findMany()
     return categories
 }
+
+export const createCategory = async (data: CategoryFormInterface) => {
+    const category = await prisma.category.create({
+        data
+    })
+    return category
+}
+
 
 export const getProductsByCategory = async (categoryId: string) => {
     const category = await prisma.category.findFirst({

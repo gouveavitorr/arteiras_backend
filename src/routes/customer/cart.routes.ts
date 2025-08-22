@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { CartOperationsController } from "../../controllers/customer/cart-operations.controller";
 import { isAuthenticated } from "../../middlewares/isAuthenticated";
-import { CartItemRequest } from "../../usecases/customer/cart-operations.usecases";
+import { CartItemRequest, CartItemUpdate } from "../../usecases/customer/cart-operations.usecases";
 
 const controller = new CartOperationsController()
 
@@ -10,6 +10,12 @@ export async function cartRouter(app: FastifyInstance) {
     "/cart/add",
     { preHandler: isAuthenticated },
     controller.addItem
+  )
+
+  app.put<{ Body: CartItemUpdate }>(
+    "/cart",
+    { preHandler: isAuthenticated },
+    controller.updateItem
   )
 
   app.delete<{ Params: { cartItemId: string } }>(

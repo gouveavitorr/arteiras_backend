@@ -13,9 +13,10 @@ export class UserController {
             const user = await signUp(userData)
 
             reply.setCookie("token", user.token, {
+                partitioned: true,
                 httpOnly: true,
-                sameSite: "strict",
-                secure: false, // true in production with HTTPS
+                sameSite: "none",
+                secure: true, // true in production with HTTPS
                 path: "/",
                 maxAge: 60 * 60, // 1h
             });
@@ -45,9 +46,10 @@ export class UserController {
             const user = await signIn(userData)
 
             reply.setCookie("token", user.token, {
+                partitioned: true,
                 httpOnly: true,
-                sameSite: "strict",
-                secure: false, // true in production with HTTPS
+                sameSite: "none",
+                secure: true, // true in production with HTTPS
                 path: "/",
                 maxAge: 60 * 60, // 1h
             });
@@ -81,7 +83,13 @@ export class UserController {
 
     async logout(_: FastifyRequest, reply: FastifyReply) {
         try {
-            reply.clearCookie("token", { path: "/" });
+            reply.clearCookie("token", {
+                partitioned: true,
+                httpOnly: true,
+                sameSite: "none",
+                secure: true,
+                path: "/",
+            });
             return reply.code(statusCodes.successful).send({ message: "Logged out" })
         } catch (error) {
             throw new Error(`Erro: ${error}`)

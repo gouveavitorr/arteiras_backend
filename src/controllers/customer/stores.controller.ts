@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { getStores, getStore, getStoresQty } from "../../usecases/customer/stores.usecases";
+import { getStores, getStore, getStoresQty, createStore, updateStore, deleteStore } from "../../usecases/customer/stores.usecases";
 import { statusCodes } from "../../utils/types";
+import { StoreCreateRequest, StoreUpdateRequest } from "../../schemas/stores";
 
 export class StoresController {
     async getStores(_req: FastifyRequest, reply: FastifyReply) {
@@ -30,6 +31,43 @@ export class StoresController {
             return reply.code(statusCodes.successful).send(qty)
         } catch (error) {
             return reply.code(statusCodes.notFound).send(error)
+        }
+    }
+
+    async createStore(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const storeData = StoreCreateRequest.parse(req.body)
+
+            const store = await createStore(storeData)
+
+            return reply.code(statusCodes.successful).send(store)
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
+        }
+    }
+
+    async updateStore(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+        try {
+            const { id } = req.params
+            const storeData = StoreUpdateRequest.parse(req.body)
+
+            const store = await updateStore(id, storeData)
+
+            return reply.code(statusCodes.successful).send(store)
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
+        }
+    }
+
+    async deleteStore(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+        try {
+            const { id } = req.params
+
+            await deleteStore(id)
+
+            return reply.code(statusCodes.successful).send({ message: "Store deleted successfully" })
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
         }
     }
 }

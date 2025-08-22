@@ -11,6 +11,17 @@ type ProductFilters = {
     search?: string
 }
 
+type ProductFormInterface = {
+    name: string;
+    description: string;
+    storeId: string;
+    categoryId: string;
+    price: number;
+    weight: number;
+    size: number;
+    quantity: number;
+}
+
 export const getPaginatedProducts = async (
     offset: number,
     limit: number,
@@ -82,4 +93,18 @@ export const getProduct = async (productId: string) => {
 
     return product
 
+}
+
+export const createProduct = async (data: ProductFormInterface) => {
+    const { categoryId, ...productData } = data
+
+    const product = await prisma.product.create({
+        data: {
+            ...productData,
+            categories: {
+                connect: { id: categoryId },
+            },
+        },
+    })
+    return product
 }

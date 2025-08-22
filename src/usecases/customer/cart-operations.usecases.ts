@@ -6,8 +6,12 @@ export interface CartItemRequest {
     quantity: number
 }
 
-export const addItemToCart = async (data: CartItemRequest) => {
+export interface CartItemUpdate {
+    id: string,
+    quantity: number
+}
 
+export const addItemToCart = async (data: CartItemRequest) => {
     const product = await prisma.product.findFirst({
         where: {
             id: data.productId
@@ -118,6 +122,20 @@ export const countItems = async (id: string) => {
         }
     })
     return { totalItems }
+}
+
+export const updateItem = async (id: string, userId: string, quantity: number) => {
+    const item = await prisma.cartItem.update({
+        data: {
+            quantity
+        },
+        where: {
+            id,
+            userId
+        }
+    })
+
+    return item
 }
 
 export const showUniqueCartItem = async (id: string) => {

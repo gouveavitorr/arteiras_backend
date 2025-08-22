@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { addItemToCart, showUniqueCartItem, showCartItems, removeOneItemFromCart, deleteItemFromCart, clearCart, CartItemRequest, countItems } from "../../usecases/customer/cart-operations.usecases";
+import { addItemToCart, showUniqueCartItem, showCartItems, removeOneItemFromCart, deleteItemFromCart, clearCart, CartItemRequest, countItems, updateItem, CartItemUpdate } from "../../usecases/customer/cart-operations.usecases";
 import { statusCodes } from "../../utils/types";
 
 export class CartOperationsController {
@@ -41,6 +41,19 @@ export class CartOperationsController {
             await removeOneItemFromCart(cartItemId)
 
             return reply.code(statusCodes.successful).send("Um item retirado.")
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
+        }
+    }
+
+    async updateItem(req: FastifyRequest<{ Body: CartItemUpdate }>, reply: FastifyReply) {
+        try {
+            const { id: userId } = req.user!
+            const { id, quantity } = req.body
+
+            const item = await updateItem(id, userId, quantity)
+
+            return reply.code(statusCodes.successful).send(item)
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }

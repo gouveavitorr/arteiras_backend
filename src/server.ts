@@ -7,6 +7,7 @@ import cookie from "@fastify/cookie";
 
 export const app: FastifyInstance = fastify({
   exposeHeadRoutes: true, // Default value
+  trustProxy: 1,
   logger: {
     level: 'info',
     redact: ['req.headers.authorization'], // INFO: Prevent privacy laws violation
@@ -38,15 +39,16 @@ const trustedProxies = (process.env.TRUSTED_PROXIES as string).split(",")
 
 // INFO: Cross origin access to this API
 app.register(fastifyCors, {
-  origin: trustedProxies,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-})
+  origin: (origin, cb) => {
+    console.log("Incoming Origin:", origin);
+    const allowed = trustedProxies.includes(origin ?? "");
+    cb(null, allowed);
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  credentials: true,
+});
 
 app.register(cookie);
-
-// INFO: Server Health check route
-app.get('/health', (_, reply) => reply.code(statusCodes.successful).send({ status: "OK" }))
 
 // INFO: Site icon
 app.get('/favicon.ico', (_, reply) => reply.code(statusCodes.noContent))
@@ -61,6 +63,9 @@ app.register(async (router) => {
   router.register(addressesRouter)
   router.register(ordersRouter)
   router.register(user)
+
+  // INFO: Server Health check route
+  router.get('/health', (_, reply) => reply.code(statusCodes.successful).send({ status: "OK" }))
 }, {
   prefix: "/api/v1"
 })

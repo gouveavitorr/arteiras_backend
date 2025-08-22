@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { getPaginatedProducts, getProduct, getProductQty } from "../../usecases/customer/product-listing.usecases";
+import { createProduct, getPaginatedProducts, getProduct, getProductQty } from "../../usecases/customer/product-listing.usecases";
 import { statusCodes } from "../../utils/types";
+import { ProductCreateRequest } from "../../schemas/products";
 
 export class ProductListingController {
     async getProducts(req: FastifyRequest<{
@@ -68,6 +69,18 @@ export class ProductListingController {
             return reply.code(statusCodes.successful).send(product)
         } catch (error) {
             return reply.code(statusCodes.notFound).send(error.message)
+        }
+    }
+
+    async createProduct(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const productData = ProductCreateRequest.parse(req.body)
+
+            const product = await createProduct(productData)
+
+            return reply.code(statusCodes.successful).send(product)
+        } catch (error) {
+            return reply.code(statusCodes.serverError).send(error)
         }
     }
 }

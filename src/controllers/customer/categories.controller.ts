@@ -1,8 +1,21 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { getCategories, getCategoriesQty, getProductsByCategory, getStoresByCategory } from "../../usecases/customer/categories.usecases";
+import { createCategory, getCategories, getCategoriesQty, getProductsByCategory, getStoresByCategory } from "../../usecases/customer/categories.usecases";
 import { statusCodes } from "../../utils/types";
+import { CategoryCreateRequest } from "../../schemas/categories";
 
 export class CategoriesController {
+    async createCategory(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const categoryData = CategoryCreateRequest.parse(req.body)
+
+            const category = await createCategory(categoryData)
+
+            return reply.code(statusCodes.successful).send(category)
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
+        }
+    }
+
     async getCategories(_req: FastifyRequest, reply: FastifyReply) {
         try {
             const categories = await getCategories()
