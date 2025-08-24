@@ -1,12 +1,14 @@
 import { FastifyInstance, fastify } from "fastify";
-import { productsRouter, cartRouter, storesRouter, categoriesRouter, addressesRouter, ordersRouter } from "./routes/customer"
-import { fastifyCors } from "@fastify/cors";
-import cookie from "@fastify/cookie";
+import { productsRouter, cartRouter, storesRouter, categoriesRouter, addressesRouter, ordersRouter, sellersRouter } from "./routes/customer"
 import { user } from "./routes/user.routes"
 import { statusCodes } from "./utils/types";
 import { STATUS_CODES } from "http";
+import { configPlugins } from "./configs/plugins";
 
-import PrismaPlugin from "./lib/prisma"
+import fs from "fs/promises";
+import path from "path";
+
+export const UPLOAD_DIR = path.join(__dirname, "../uploads");
 
 export const app: FastifyInstance = fastify({
   exposeHeadRoutes: true, // Default value
@@ -30,9 +32,6 @@ export const app: FastifyInstance = fastify({
   }
 });
 
-app.register(PrismaPlugin);
-
-
 // INFO: Upper-level error handler
 app.setErrorHandler(async (error, _request, reply) => {
   app.log.warn(`${error.message}${error.log ? `\nlog: ${error.log}` : ""}`)
@@ -46,20 +45,7 @@ app.setErrorHandler(async (error, _request, reply) => {
   })
 })
 
-const trustedProxies = (process.env.TRUSTED_PROXIES as string).split(",")
-
-// INFO: Cross origin access to this API
-app.register(fastifyCors, {
-  origin: (origin, cb) => {
-    console.log("Incoming Origin:", origin);
-    const allowed = trustedProxies.includes(origin ?? "");
-    cb(null, allowed);
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  credentials: true,
-});
-
-app.register(cookie);
+configPlugins(app)
 
 // INFO: Site icon
 app.get('/favicon.ico', (_, reply) => reply.code(statusCodes.noContent))
@@ -73,6 +59,7 @@ app.register(async (router) => {
   router.register(cartRouter, { prefix: "/cart" })
   router.register(addressesRouter, { prefix: "/addresses" })
   router.register(ordersRouter, { prefix: "/orders" })
+  router.register(sellersRouter, { prefix: "/sellers" })
   router.register(user)
 
   // INFO: Server Health check route
@@ -86,6 +73,7 @@ const host = process.env.HOST as string // host 0.0.0.0 to expose the connection
 
 const start = async () => {
   try {
+    await fs.mkdir(UPLOAD_DIR, { recursive: true });
     await app.listen({ host, port });
   } catch (err) {
     app.log.error(err);

@@ -23,21 +23,66 @@ model User {
 }
 
 model Product {
-  id          String      @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
   price       Float
   description String
   weight      Float
   size        Float
   quantity    Int
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   storeId     String
-  cartItems   CartItem[]
-  images      Image[]
-  OrderItems  OrderItem[]
-  store       Store       @relation(fields: [storeId], references: [id])
-  categories  Category[]  @relation("CategoryToProduct")
+
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+  categories Category[]     @relation("CategoryToProduct")
+  store      Store          @relation(fields: [storeId], references: [id])
+  images     ProductImage[]
+}
+
+model Store {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String
+  sellerId    String  @unique
+  phoneNumber String? @unique
+  instagramId String? @unique
+  facebookId  String? @unique
+
+  products    Product[]
+  seller      Seller        @relation(fields: [sellerId], references: [id])
+  categories  Category[]    @relation("CategoryToStore")
+  orders      Order[]       @relation("OrderToStore")
+  customOrder CustomOrder[]
+  images      StoreImage[]
+}
+
+model Image {
+  id           String         @id @default(cuid())
+  url          String
+  filename     String
+  createdAt    DateTime       @default(now())
+  ProductImage ProductImage[]
+  StoreImage   StoreImage[]
+}
+
+model ProductImage {
+  productId String
+  imageId   String
+  product   Product @relation(fields: [productId], references: [id])
+  image     Image   @relation(fields: [imageId], references: [id])
+
+  @@id([productId, imageId])
+}
+
+model StoreImage {
+  storeId String
+  imageId String
+  store   Store  @relation(fields: [storeId], references: [id])
+  image   Image  @relation(fields: [imageId], references: [id])
+
+  @@id([storeId, imageId])
 }
 
 model Category {
@@ -45,29 +90,6 @@ model Category {
   name     String
   products Product[] @relation("CategoryToProduct")
   stores   Store[]   @relation("CategoryToStore")
-}
-
-model Image {
-  id        String  @id @default(cuid())
-  productId String
-  link      String
-  product   Product @relation(fields: [productId], references: [id])
-}
-
-model Store {
-  id          String        @id @default(cuid())
-  name        String        @unique
-  description String
-  image       String
-  sellerId    String        @unique
-  phoneNumber String?       @unique
-  instagramId String?       @unique
-  facebookId  String?       @unique
-  products    Product[]
-  seller      Seller        @relation(fields: [sellerId], references: [id])
-  categories  Category[]    @relation("CategoryToStore")
-  orders      Order[]       @relation("OrderToStore")
-  CustomOrder CustomOrder[]
 }
 
 model Seller {

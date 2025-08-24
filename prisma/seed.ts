@@ -52,7 +52,6 @@ async function main() {
       id: "1",
       name: "Rosinha Artesanatos",
       description: "Aqui transformo linhas em peças únicas.",
-      image: "imagem.jpg",
       sellerId: "1",
     },
   });
@@ -64,7 +63,6 @@ async function main() {
       id: "2",
       name: "Marjorie Artesanatos",
       description: "Aqui transformo madeiras em peças únicas.",
-      image: "imagem.jpg",
       sellerId: "2",
     },
   });
@@ -76,7 +74,6 @@ async function main() {
       id: "3",
       name: "Juju Artesanatos",
       description: "Aqui transformo crochê em peças únicas.",
-      image: "imagem.jpg",
       sellerId: "3",
     },
   });
@@ -88,7 +85,6 @@ async function main() {
       id: "4",
       name: "Josi Artesanatos",
       description: "Aqui transformo vidro em peças únicas.",
-      image: "imagem.jpg",
       sellerId: "4",
     },
   });

@@ -1,4 +1,6 @@
+import { FastifyError } from "fastify";
 import { app } from "../../server";
+import { statusCodes } from "../../utils/types";
 
 export interface StoreFormInterface {
     name: string,
@@ -11,7 +13,11 @@ export interface StoreFormInterface {
 }
 
 export const getStores = async () => {
-    const stores = await app.prisma.store.findMany()
+    const stores = await app.prisma.store.findMany({
+        include: {
+            images: true
+        }
+    })
     return stores
 }
 
@@ -35,6 +41,18 @@ export const getStoresQty = async () => {
 }
 
 export const createStore = async (data: StoreFormInterface) => {
+    const seller = app.prisma.store.findFirst({
+        where: {
+            sellerId: data.sellerId
+        }
+    })
+
+    if (seller != null) {
+        const err = new Error("Seller already has a store") as FastifyError
+        err.statusCode = statusCodes.badRequest
+        throw err
+    }
+
     const store = await app.prisma.store.create({
         data
     })

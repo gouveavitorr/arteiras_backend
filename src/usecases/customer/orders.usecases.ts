@@ -114,6 +114,12 @@ export const checkout = async (userId: string, addressId?: string, paymentMethod
     cartItems.forEach(item => {
         const { product, quantity } = item
 
+        if (product.quantity < quantity) {
+            const err = new Error("Product doesn't have enough stock") as FastifyError
+            err.statusCode = statusCodes.badRequest
+            throw err
+        }
+
         if (!newOrder.stores.includes(product.store))
             newOrder.stores.push(product.store)
 
@@ -169,16 +175,29 @@ export const checkout = async (userId: string, addressId?: string, paymentMethod
         }
     })
 
-    // NOTE: Delete parsed cart items or use a flag to set it as purchased
-    // app.prisma.cartItem.deleteMany({
-    //     where: {
-    //         id: {
-    //             in: cartItems.map(item =>
-    //                 item.id
-    //             )
-    //         }
-    //     }
-    // })
+    // WARN: Delete parsed cart items or use a flag to set it as purchased
+    await app.prisma.cartItem.deleteMany({
+        where: {
+            id: {
+                in: cartItems.map((item) => item.id),
+            },
+        },
+    });
+
+    await app.prisma.$transaction(
+        cartItems.map((item) =>
+            app.prisma.product.update({
+                where: {
+                    id: item.productId,
+                },
+                data: {
+                    quantity: {
+                        decrement: item.quantity,
+                    },
+                },
+            })
+        )
+    );
 
     return createdOrder
 }
@@ -196,4 +215,14 @@ export const cancelOrder = async (id: string, userId: string) => {
     })
 
     return order
+}
+
+export const getOrdersQty = async (userId: string) => {
+    const totalOrders = await app.prisma.order.count({
+        where: {
+            userId
+        }
+    })
+
+    return { totalOrders }
 }

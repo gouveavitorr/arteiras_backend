@@ -24,7 +24,7 @@ export class UserController {
             return reply.code(statusCodes.successful).send(user)
 
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            throw error
         }
     }
 
@@ -36,7 +36,7 @@ export class UserController {
 
             return reply.code(statusCodes.successful).send(user)
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            throw error
         }
     }
 
@@ -56,7 +56,7 @@ export class UserController {
 
             return reply.code(statusCodes.successful).send(user)
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            throw error
         }
     }
 
@@ -92,7 +92,7 @@ export class UserController {
             });
             return reply.code(statusCodes.successful).send({ message: "Logged out" })
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            throw error
         }
     }
 
@@ -103,7 +103,7 @@ export class UserController {
             const profile = await getUserProfile(id)
             return reply.code(statusCodes.successful).send(profile)
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            throw error
         }
     }
 
@@ -120,7 +120,7 @@ export class UserController {
 
             return reply.code(statusCodes.successful).send(updatedUser)
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            throw error
         }
     }
 
@@ -130,7 +130,7 @@ export class UserController {
             const qty = await getUserOrdersQty(id)
             return reply.code(statusCodes.successful).send(qty)
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            throw error
         }
     }
 
@@ -140,7 +140,7 @@ export class UserController {
             const orders = await getUserOrders(id)
             return reply.code(statusCodes.successful).send(orders)
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            throw error
         }
     }
 

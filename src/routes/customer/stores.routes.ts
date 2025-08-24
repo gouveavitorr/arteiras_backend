@@ -10,6 +10,6 @@ export async function storesRouter(app: FastifyInstance) {
   app.get("/qty", controller.getStoresQty)
 
   app.post("/", { preHandler: isAdmin }, controller.createStore)
-  app.put<{ Params: { id: string } }>("/:storeId", { preHandler: isAdmin }, controller.updateStore)
-  app.delete<{ Params: { id: string } }>("/:storeId", { preHandler: isAdmin }, controller.deleteStore)
+  app.put<{ Params: { id: string } }>("/:id", { preHandler: isAdmin }, controller.updateStore)
+  app.delete<{ Params: { id: string } }>("/:id", { preHandler: isAdmin }, controller.deleteStore)
 }

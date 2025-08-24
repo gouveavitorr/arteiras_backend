@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { getStores, getStore, getStoresQty, createStore, updateStore, deleteStore } from "../../usecases/customer/stores.usecases";
 import { statusCodes } from "../../utils/types";
 import { StoreCreateRequest, StoreUpdateRequest } from "../../schemas/stores";
+import { createImage, createStoreImage } from "../../usecases/customer/images.usecases";
 
 export class StoresController {
     async getStores(_req: FastifyRequest, reply: FastifyReply) {
@@ -42,7 +43,30 @@ export class StoresController {
 
             return reply.code(statusCodes.successful).send(store)
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            throw error
+        }
+    }
+
+    async createStoreWithFile(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const storeData = StoreCreateRequest.parse(req.body)
+
+            const file = await req.file()
+
+            const store = await createStore(storeData)
+
+            if (file) {
+                const image = await createImage(file)
+
+                await createStoreImage({
+                    storeId: store.id,
+                    imageId: image.id
+                })
+            }
+
+            return reply.code(statusCodes.successful).send(store)
+        } catch (error) {
+            throw error
         }
     }
 

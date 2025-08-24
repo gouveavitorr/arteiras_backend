@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { getOrders, getOrder, checkout, cancelOrder } from "../../usecases/customer/orders.usecases"
+import { getOrders, getOrder, checkout, cancelOrder, getOrdersQty } from "../../usecases/customer/orders.usecases"
 import { statusCodes } from "../../utils/types";
 
 export class OrdersController {
@@ -9,6 +9,16 @@ export class OrdersController {
             const orders = await getOrders(id)
             return reply.code(statusCodes.successful).send(orders)
 
+        } catch (error) {
+            throw error
+        }
+    }
+
+    async getOrdersQty(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const { id } = req.user!
+            const qty = await getOrdersQty(id)
+            return reply.code(statusCodes.successful).send(qty)
         } catch (error) {
             throw error
         }

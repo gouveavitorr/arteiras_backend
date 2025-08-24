@@ -105,6 +105,13 @@ export const showCartItems = async (id: string) => {
     const items = await app.prisma.cartItem.findMany({
         where: {
             userId: user?.id
+        },
+        include: {
+            product: {
+                include: {
+                    images: true
+                }
+            },
         }
     })
     return items
