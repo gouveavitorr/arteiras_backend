@@ -40,6 +40,7 @@ export const addItemToCart = async (data: CartItemRequest) => {
     })
 
     if (cartItemExists) {
+        data.quantity += cartItemExists.quantity
         const updatedItem = await app.prisma.cartItem.update({
             where: {
                 id: cartItemExists.id
@@ -47,7 +48,7 @@ export const addItemToCart = async (data: CartItemRequest) => {
             data: {
                 productId: data?.productId || cartItemExists.productId,
                 userId: data?.userId || cartItemExists.userId,
-                quantity: data.quantity += cartItemExists.quantity
+                quantity: data.quantity > product.quantity ? product.quantity : data.quantity
             }
         })
         return updatedItem
