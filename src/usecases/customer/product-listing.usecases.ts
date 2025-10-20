@@ -88,6 +88,9 @@ export const getProduct = async (productId: string) => {
     const product = await app.prisma.product.findUnique({
         where: {
             id: productId,
+        },
+        include: {
+            store: true,
         }
     })
     if (!product) {
@@ -113,13 +116,26 @@ export const createProduct = async (data: ProductFormInterface) => {
 }
 
 export const updateProduct = async (id: string, data: ProductFormInterface) => {
-    const product = await app.prisma.product.update({
-        data,
-        where: {
-            id
-        }
-    })
-    return product
+  
+  const { storeId, categoryId, ...restOfData } = data;
+
+  const product = await app.prisma.product.update({
+    data: {
+      ...restOfData,
+      store: {
+        connect: { id: storeId }, 
+      },
+      categories: {
+        connect: { id: categoryId }, 
+      },
+      
+    },
+    where: {
+      id: id
+    }
+  });
+
+  return product;
 }
 
 
