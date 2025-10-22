@@ -22,7 +22,7 @@ export class CartOperationsController {
 
             await deleteItemFromCart(cartItemId)
 
-            return reply.code(statusCodes.successful).send("Produto excluído do carrinho.")
+            return reply.code(statusCodes.successful).send({ message: "Produto excluído do carrinho." })
         } catch (error) {
             throw new Error(`Erro: ${error}`)
         }
