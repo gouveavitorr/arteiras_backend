@@ -65,7 +65,8 @@ export const getPaginatedProducts = async (
     const products = await app.prisma.product.findMany({
         where,
         include: {
-            images: true
+            images: true,
+            categories: true
         },
         skip: offset,
         take: limit,
@@ -91,6 +92,8 @@ export const getProduct = async (productId: string) => {
         },
         include: {
             store: true,
+            categories: true,
+            images: true
         }
     })
     if (!product) {
@@ -116,26 +119,26 @@ export const createProduct = async (data: ProductFormInterface) => {
 }
 
 export const updateProduct = async (id: string, data: ProductFormInterface) => {
-  
-  const { storeId, categoryId, ...restOfData } = data;
 
-  const product = await app.prisma.product.update({
-    data: {
-      ...restOfData,
-      store: {
-        connect: { id: storeId }, 
-      },
-      categories: {
-        connect: { id: categoryId }, 
-      },
-      
-    },
-    where: {
-      id: id
-    }
-  });
+    const { storeId, categoryId, ...restOfData } = data;
 
-  return product;
+    const product = await app.prisma.product.update({
+        data: {
+            ...restOfData,
+            store: {
+                connect: { id: storeId },
+            },
+            categories: {
+                connect: { id: categoryId },
+            },
+
+        },
+        where: {
+            id: id
+        }
+    });
+
+    return product;
 }
 
 
