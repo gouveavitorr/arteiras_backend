@@ -1,4 +1,6 @@
+import { FastifyError } from "fastify";
 import { app } from "../../server";
+import { statusCodes } from "../../utils/types";
 
 export interface CartItemRequest {
     productId: string,
@@ -133,6 +135,33 @@ export const countItems = async (id: string) => {
 }
 
 export const updateItem = async (id: string, userId: string, quantity: number) => {
+    if (quantity < 1) {
+        const err = new Error("Invalid Quantity") as FastifyError
+        err.statusCode = statusCodes.badRequest
+        throw err
+    }
+
+    const itemProduct = await app.prisma.cartItem.findFirst({
+        where: {
+            id: id,
+        },
+        include: {
+            product: true
+        }
+    })
+
+    if (!itemProduct) {
+        const err = new FastifyError("Product not found") as FastifyError
+        err.statusCode = statusCodes.notFound
+        throw err
+    }
+
+    if (quantity > itemProduct.product.quantity) {
+        const err = new Error("Invalid Quantity") as FastifyError
+        err.statusCode = statusCodes.badRequest
+        throw err
+    }
+
     const item = await app.prisma.cartItem.update({
         data: {
             quantity

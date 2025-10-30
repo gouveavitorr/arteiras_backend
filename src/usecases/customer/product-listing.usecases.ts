@@ -153,6 +153,7 @@ export const getPaginatedProducts = async (
                     image: true
                 }
             },
+            categories: true
         },
         skip: offset,
         take: limit,
