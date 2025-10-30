@@ -9,6 +9,7 @@ import { UPLOAD_DIR } from "../server";
 
 export function configPlugins(app: FastifyInstance) {
     app.register(multipart, {
+        attachFieldsToBody: false,
         limits: {
             fileSize: 10 * 1024 * 1024, // 10 MB
         },
@@ -16,7 +17,7 @@ export function configPlugins(app: FastifyInstance) {
 
     app.register(fastifyStatic, {
         root: UPLOAD_DIR,
-        prefix: '/api/v1/uploads/', 
+        prefix: '/api/v1/uploads/',
     });
 
     // INFO: Database Plugin

@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { createProduct, deleteProduct, getPaginatedProducts, getProduct, getProductQty, updateProduct } from "../../usecases/customer/product-listing.usecases";
 import { statusCodes } from "../../utils/types";
 import { ProductCreateRequest, ProductUpdateRequest } from "../../schemas/products";
-import { createImage, createProductImage } from "../../usecases/customer/images.usecases"; 
+import { createImage, createProductImage } from "../../usecases/customer/images.usecases";
 
 export class ProductListingController {
     async getProducts(req: FastifyRequest<{
@@ -77,10 +77,10 @@ export class ProductListingController {
         try {
             const parts = req.parts();
             if (!parts) throw new Error("Invalid Multipart Form");
-            
+
             const fields: Record<string, any> = {};
             const fileParts: any[] = [];
-            
+
             for await (const part of parts) {
                 if (part.type === 'field') {
                     fields[part.fieldname] = String(part.value);
@@ -97,28 +97,27 @@ export class ProductListingController {
                 description: fields.description || '',
                 storeId: fields.storeId || '',
                 categoryId: fields.categoryId || '',
-                image: fields.image || null, 
+                image: fields.image || null,
             };
 
-            const productData = ProductCreateRequest.parse(convertedBody); 
+            const productData = ProductCreateRequest.parse(convertedBody);
 
-
-            const product = await createProduct(productData); 
+            const product = await createProduct(productData);
 
             if (!product) {
                 console.error("ERRO GRAVE: createProduct retornou nulo.");
 
                 throw new Error("Falha na criação da entrada principal do produto.");
-    }
+            }
 
             if (fileParts.length > 0) {
                 console.log(`INFO: Tentando criar ${fileParts.length} imagem(ns)...`);
                 const imagePromises = fileParts.map(filePart => {
-                    console.log(`DEBUG: Processando arquivo: ${filePart.filename}`); 
+                    console.log(`DEBUG: Processando arquivo: ${filePart.filename}`);
                     return createImage(filePart);
                 });
                 const images = await Promise.all(imagePromises);
-                console.log(`DEBUG: ${images.length} imagens salvas com sucesso.`); 
+                console.log(`DEBUG: ${images.length} imagens salvas com sucesso.`);
 
                 const connectionPromises = images.map(image => createProductImage({
                     productId: product.id,
@@ -136,7 +135,7 @@ export class ProductListingController {
     async updateProduct(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
         try {
             const { id } = req.params;
-            
+
             const parts = req.parts();
             if (!parts) {
                 throw new Error("Invalid Multipart Form");
@@ -144,7 +143,7 @@ export class ProductListingController {
 
             let productDataString: string = '';
             const newImageFileParts: any[] = [];
-            
+
             for await (const part of parts) {
                 if (part.type === 'field') {
                     if (part.fieldname === 'productData') {
@@ -156,7 +155,7 @@ export class ProductListingController {
             }
 
             if (!productDataString) {
-                 throw new Error("Missing 'productData' field in multipart payload.");
+                throw new Error("Missing 'productData' field in multipart payload.");
             }
 
             let productDataJSON: any;
@@ -165,11 +164,11 @@ export class ProductListingController {
             } catch (e) {
                 throw new Error("Invalid JSON format for 'productData' field.");
             }
-            
+
             const convertedBody = {
                 price: Number(productDataJSON.price) || 0,
                 weight: Number(productDataJSON.weight) || 0,
-                size: Number(productDataJSON.size) || 0,    
+                size: Number(productDataJSON.size) || 0,
                 quantity: Number(productDataJSON.quantity) || 0,
                 name: String(productDataJSON.name || ''),
                 description: String(productDataJSON.description || ''),
@@ -182,8 +181,8 @@ export class ProductListingController {
 
             const updateControl = {
                 productData: productData,
-                imagesToKeep: (productDataJSON.existingImages as string[]) || [], 
-                newImageFileParts: newImageFileParts, 
+                imagesToKeep: (productDataJSON.existingImages as string[]) || [],
+                newImageFileParts: newImageFileParts,
                 storeId: productData.storeId,
                 categoryId: productData.categoryId,
             };
