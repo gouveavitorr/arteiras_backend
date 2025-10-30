@@ -47,28 +47,40 @@ export class StoresController {
         }
     }
 
-    async createStoreWithFile(req: FastifyRequest, reply: FastifyReply) {
-        try {
-            const storeData = StoreCreateRequest.parse(req.body)
+async createStoreWithFile(req: FastifyRequest, reply: FastifyReply) {
+    try {
+        const file = await req.file(); 
 
-            const file = await req.file()
-
-            const store = await createStore(storeData)
+            const rawBody = (file as any)?.fields || req.body; 
+            
+            const dataToValidate = {
+                name: (rawBody as any).name?.value || "",
+                description: (rawBody as any).description?.value || "",
+                sellerId: (rawBody as any).sellerId?.value || "",
+                phoneNumber: (rawBody as any).phoneNumber?.value || null,
+                instagramId: (rawBody as any).instagramId?.value || null,
+                facebookId: (rawBody as any).facebookId?.value || null,
+            };
+            
+            const storeData = StoreCreateRequest.parse(dataToValidate); 
+            
+            const store = await createStore(storeData);
 
             if (file) {
-                const image = await createImage(file)
+                const image = await createImage(file); 
 
                 await createStoreImage({
                     storeId: store.id,
                     imageId: image.id
-                })
+                });
             }
+            
+            return reply.code(statusCodes.successful).send(store);
 
-            return reply.code(statusCodes.successful).send(store)
-        } catch (error) {
-            throw error
-        }
+    } catch (error) {
+        throw new Error(`Erro: ${error}`)
     }
+}
 
     async updateStore(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
         try {

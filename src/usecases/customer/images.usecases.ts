@@ -30,7 +30,8 @@ export const createImage = async (file: MultipartFile) => {
     const filename = `${Date.now()}-${file.filename}`;
     const filePath = path.join(UPLOAD_DIR, filename);
 
-    await fs.writeFile(filePath, await file.toBuffer());
+    const fileBuffer = await file.toBuffer();
+    await fs.writeFile(filePath, fileBuffer);
 
     const image = await app.prisma.image.create({
         data: {
