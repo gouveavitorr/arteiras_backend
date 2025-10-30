@@ -4,14 +4,19 @@ import multipart from "@fastify/multipart";
 import prisma from "../lib/prisma"
 
 import { FastifyInstance } from "fastify";
+import fastifyStatic from "@fastify/static";
+import { UPLOAD_DIR } from "../server";
 
 export function configPlugins(app: FastifyInstance) {
-    // INFO: File save Plugin
     app.register(multipart, {
-        attachFieldsToBody: true,
         limits: {
             fileSize: 10 * 1024 * 1024, // 10 MB
         },
+    });
+
+    app.register(fastifyStatic, {
+        root: UPLOAD_DIR,
+        prefix: '/api/v1/uploads/', 
     });
 
     // INFO: Database Plugin
