@@ -23,11 +23,10 @@ export type ProductFormInterface = {
     quantity: number;
     image?: string | null;
 }
-
 export interface ProductUpdateControl {
     productData: ProductFormInterface;
     imagesToKeep: string[];
-    newImageFileParts: any[];
+    newImages: any[];
 }
 
 
@@ -52,10 +51,64 @@ export const createProduct = async (data: ProductFormInterface) => {
     }
 }
 
+// export const updateProduct = async (id: string, control: ProductUpdateControl) => {
+//     const { categoryId, storeId, image, ...restOfProductData } = control.productData;
+//     const productImagesToKeep = control.imagesToKeep;
+//     const newImageFileParts = control.newImageFileParts;
+//     const existingRelations = await app.prisma.productImage.findMany({
+//         where: { productId: id },
+//         include: { image: true },
+//     });
+
+//     const relationsToDelete = existingRelations.filter(rel =>
+//         !productImagesToKeep.includes(rel.image.url)
+//     );
+
+//     for (const relation of relationsToDelete) {
+//         await app.prisma.productImage.delete({
+//             where: {
+//                 productId_imageId: {
+//                     productId: relation.productId,
+//                     imageId: relation.imageId,
+//                 }
+//             }
+//         });
+//         await app.prisma.image.delete({
+//             where: { id: relation.imageId }
+//         });
+//     }
+
+//     if (newImageFileParts.length > 0) {
+//         const { createImage, createProductImage } = (await import('./images.usecases'));
+//         const imagePromises = newImageFileParts.map(filePart => createImage(filePart));
+//         const newImages = await Promise.all(imagePromises);
+
+//         const connectionPromises = newImages.map(image => createProductImage({
+//             productId: id,
+//             imageId: image.id,
+//         }));
+//         await Promise.all(connectionPromises);
+//     }
+
+//     const product = await app.prisma.product.update({
+//         data: {
+//             ...restOfProductData,
+//             store: { connect: { id: storeId } },
+//             categories: { connect: { id: categoryId } },
+//         },
+//         where: {
+//             id: id
+//         }
+//     });
+
+//     return product;
+// }
+
 export const updateProduct = async (id: string, control: ProductUpdateControl) => {
     const { categoryId, storeId, image, ...restOfProductData } = control.productData;
     const productImagesToKeep = control.imagesToKeep;
-    const newImageFileParts = control.newImageFileParts;
+    const newImages = control.newImages; // <--- MUDANÇA AQUI
+    
     const existingRelations = await app.prisma.productImage.findMany({
         where: { productId: id },
         include: { image: true },
@@ -79,11 +132,9 @@ export const updateProduct = async (id: string, control: ProductUpdateControl) =
         });
     }
 
-    if (newImageFileParts.length > 0) {
-        const { createImage, createProductImage } = (await import('./images.usecases'));
-        const imagePromises = newImageFileParts.map(filePart => createImage(filePart));
-        const newImages = await Promise.all(imagePromises);
-
+    if (newImages && newImages.length > 0) {
+        const { createProductImage } = (await import('./images.usecases'));
+        
         const connectionPromises = newImages.map(image => createProductImage({
             productId: id,
             imageId: image.id,
@@ -97,9 +148,7 @@ export const updateProduct = async (id: string, control: ProductUpdateControl) =
             store: { connect: { id: storeId } },
             categories: { connect: { id: categoryId } },
         },
-        where: {
-            id: id
-        }
+        where: { id: id }
     });
 
     return product;

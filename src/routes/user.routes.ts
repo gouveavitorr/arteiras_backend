@@ -19,6 +19,6 @@ export async function user(app: FastifyInstance) {
     app.put("/editcredentials", { preHandler: isAuthenticated }, userController.updateCredentials)
     app.get("/customer", { preHandler: isAuthenticated }, userController.getProfile)
     app.put("/customer", { preHandler: isAuthenticated }, userController.updateProfile)
-    app.get("/user/orders", { preHandler: isAuthenticated }, userController.getOrders)
-    app.get("/user/orders/qty", { preHandler: isAuthenticated }, userController.getOrdersQty)
+    // app.get("/user/orders", { preHandler: isAuthenticated }, userController.getOrders)
+    // app.get("/user/orders/qty", { preHandler: isAuthenticated }, userController.getOrdersQty)
 }

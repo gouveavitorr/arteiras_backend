@@ -1,15 +1,19 @@
-import { FastifyError } from "fastify";
 import { app } from "../../server";
-import { statusCodes } from "../../utils/types";
 
 export interface StoreFormInterface {
     name: string,
     description: string,
-    image: string,
+    image?: string | null, 
     sellerId: string,
     phoneNumber: string,
     instagramId: string,
     facebookId: string,
+}
+
+export interface StoreUpdateControl {
+    storeData: StoreFormInterface;
+    existingImage: string | null; 
+    newImage?: any;
 }
 
 export const getStores = async () => {
@@ -24,6 +28,11 @@ export const getStores = async () => {
                             filename: true
                         }
                     }
+                }
+            },
+            seller: {
+                select: {
+                    name: true
                 }
             }
         }
@@ -47,7 +56,22 @@ export const getStore = async (storeId: string) => {
                         }
                     }
                 }
-            }
+            },
+            products: {
+                include: {
+                    images: {
+                        select: {
+                            image: {
+                                select: {
+                                    url: true,
+                                }
+                            }
+                        }
+                    },
+                    categories: true
+                }
+            },
+            
         }
     })
     if (!store) {
@@ -70,22 +94,71 @@ export const createStore = async (data: StoreFormInterface) => {
     return store
 }
 
-export const updateStore = async (id: string, data: StoreFormInterface) => {
-    const store = await app.prisma.store.update({
-        data,
-        where: {
-            id
+export const updateStore = async (id: string, control: StoreUpdateControl) => {
+    
+    const { image, existingImages, sellerId, ...restOfStoreData } = control.storeData as any;
+    
+    const existingRelations = await app.prisma.storeImage.findMany({
+        where: { storeId: id },
+        include: { image: true },
+    });
+
+    const hasNewImage = !!control.newImage;
+    const removedExistingImage = !control.existingImage;
+
+    if (hasNewImage || removedExistingImage) {
+        if (existingRelations.length > 0) {
+            await app.prisma.storeImage.deleteMany({
+                where: { storeId: id },
+            });
+            
+            for (const relation of existingRelations) {
+                await app.prisma.image.delete({
+                    where: { id: relation.imageId }
+                });
+            }
         }
-    })
-    return store
+    }
+
+    if (hasNewImage) {
+        const { createStoreImage } = (await import('./images.usecases'));
+        await createStoreImage({
+            storeId: id,
+            imageId: control.newImage.id, 
+        });
+    }
+
+    const store = await app.prisma.store.update({
+        data: {
+            ...restOfStoreData,
+            seller: { 
+                connect: { id: sellerId } 
+            }
+        },
+        where: {
+            id: id
+        }
+    });
+
+    return store;
 }
 
-
 export const deleteStore = async (id: string) => {
+    const imageRelations = await app.prisma.storeImage.findMany({
+        where: { storeId: id },
+    });
+
+    await app.prisma.storeImage.deleteMany({
+        where: { storeId: id },
+    });
+
+    for (const relation of imageRelations) {
+        await app.prisma.image.delete({
+            where: { id: relation.imageId },
+        });
+    }
     const store = await app.prisma.store.delete({
-        where: {
-            id
-        }
-    })
+        where: { id: id }
+    });
     return store
 }

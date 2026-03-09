@@ -82,16 +82,52 @@ async createStoreWithFile(req: FastifyRequest, reply: FastifyReply) {
     }
 }
 
-    async updateStore(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+async updateStore(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
         try {
-            const { id } = req.params
-            const storeData = StoreUpdateRequest.parse(req.body)
+            const { id } = req.params;
+            const parts = req.parts();
+            if (!parts) throw new Error("Invalid Multipart Form");
 
-            const store = await updateStore(id, storeData)
+            let storeDataString: string = '';
+            const uploadedImages: any[] = [];
 
-            return reply.code(statusCodes.successful).send(store)
+            for await (const part of parts) {
+                if (part.type === 'field') {
+                    if (part.fieldname === 'storeData') {
+                        storeDataString = String(part.value);
+                    }
+                } else if (part.type === 'file') {
+                    const image = await createImage(part);
+                    uploadedImages.push(image);
+                }
+            }
+
+            if (!storeDataString) {
+                throw new Error("Missing 'storeData' field in multipart payload.");
+            }
+
+            let storeDataJSON: any;
+            try {
+                storeDataJSON = JSON.parse(storeDataString);
+            } catch (e) {
+                throw new Error("Invalid JSON format for 'storeData' field.");
+            }
+            const existingImage = storeDataJSON.existingImages && storeDataJSON.existingImages.length > 0 
+                ? storeDataJSON.existingImages[0] 
+                : null;
+
+            const updateControl = {
+                storeData: storeDataJSON,
+                existingImage: existingImage,
+                newImage: uploadedImages.length > 0 ? uploadedImages[0] : null,
+            };
+            
+            const store = await updateStore(id, updateControl);
+
+            return reply.code(statusCodes.successful).send(store);
         } catch (error) {
-            throw new Error(`Erro: ${error}`)
+            console.error("Erro no updateStore:", error);
+            return reply.code(statusCodes.badRequest).send(error);
         }
     }
 

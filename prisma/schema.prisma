@@ -27,7 +27,6 @@ model Product {
   name        String
   price       Float
   description String
-  weight      Float
   size        Float
   quantity    Int
   createdAt   DateTime @default(now())
@@ -95,7 +94,6 @@ model Category {
 model Seller {
   id          String @id @default(cuid())
   name        String @unique
-  cpf         String @unique
   phoneNumber String @unique
   Store       Store?
 }
