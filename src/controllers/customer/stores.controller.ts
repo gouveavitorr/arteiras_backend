@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { getStores, getStore, getStoresQty, createStore, updateStore, deleteStore } from "../../usecases/customer/stores.usecases";
 import { statusCodes } from "../../utils/types";
-import { StoreCreateRequest, StoreUpdateRequest } from "../../schemas/stores";
+import { StoreCreateRequest } from "../../schemas/stores";
 import { createImage, createStoreImage } from "../../usecases/customer/images.usecases";
 
 export class StoresController {
@@ -47,12 +47,12 @@ export class StoresController {
         }
     }
 
-async createStoreWithFile(req: FastifyRequest, reply: FastifyReply) {
-    try {
-        const file = await req.file(); 
+    async createStoreWithFile(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const file = await req.file();
 
-            const rawBody = (file as any)?.fields || req.body; 
-            
+            const rawBody = (file as any)?.fields || req.body;
+
             const dataToValidate = {
                 name: (rawBody as any).name?.value || "",
                 description: (rawBody as any).description?.value || "",
@@ -61,28 +61,28 @@ async createStoreWithFile(req: FastifyRequest, reply: FastifyReply) {
                 instagramId: (rawBody as any).instagramId?.value || null,
                 facebookId: (rawBody as any).facebookId?.value || null,
             };
-            
-            const storeData = StoreCreateRequest.parse(dataToValidate); 
-            
+
+            const storeData = StoreCreateRequest.parse(dataToValidate);
+
             const store = await createStore(storeData);
 
             if (file) {
-                const image = await createImage(file); 
+                const image = await createImage(file);
 
                 await createStoreImage({
                     storeId: store.id,
                     imageId: image.id
                 });
             }
-            
+
             return reply.code(statusCodes.successful).send(store);
 
-    } catch (error) {
-        throw new Error(`Erro: ${error}`)
+        } catch (error) {
+            throw new Error(`Erro: ${error}`)
+        }
     }
-}
 
-async updateStore(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+    async updateStore(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
         try {
             const { id } = req.params;
             const parts = req.parts();
@@ -112,8 +112,8 @@ async updateStore(req: FastifyRequest<{ Params: { id: string } }>, reply: Fastif
             } catch (e) {
                 throw new Error("Invalid JSON format for 'storeData' field.");
             }
-            const existingImage = storeDataJSON.existingImages && storeDataJSON.existingImages.length > 0 
-                ? storeDataJSON.existingImages[0] 
+            const existingImage = storeDataJSON.existingImages && storeDataJSON.existingImages.length > 0
+                ? storeDataJSON.existingImages[0]
                 : null;
 
             const updateControl = {
@@ -121,7 +121,7 @@ async updateStore(req: FastifyRequest<{ Params: { id: string } }>, reply: Fastif
                 existingImage: existingImage,
                 newImage: uploadedImages.length > 0 ? uploadedImages[0] : null,
             };
-            
+
             const store = await updateStore(id, updateControl);
 
             return reply.code(statusCodes.successful).send(store);

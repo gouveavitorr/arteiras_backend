@@ -1,5 +1,5 @@
 import { app } from "../../server";
-import { createImage, createProductImage } from "./images.usecases";
+// import { createImage, createProductImage } from "./images.usecases";
 
 type ProductFilters = {
     categoryId?: number
@@ -18,7 +18,7 @@ export type ProductFormInterface = {
     storeId: string;
     categoryId: string;
     price: number;
-    weight: number;
+    weight?: number;
     size: number;
     quantity: number;
     image?: string | null;
@@ -108,7 +108,7 @@ export const updateProduct = async (id: string, control: ProductUpdateControl) =
     const { categoryId, storeId, image, ...restOfProductData } = control.productData;
     const productImagesToKeep = control.imagesToKeep;
     const newImages = control.newImages; // <--- MUDANÇA AQUI
-    
+
     const existingRelations = await app.prisma.productImage.findMany({
         where: { productId: id },
         include: { image: true },
@@ -134,7 +134,7 @@ export const updateProduct = async (id: string, control: ProductUpdateControl) =
 
     if (newImages && newImages.length > 0) {
         const { createProductImage } = (await import('./images.usecases'));
-        
+
         const connectionPromises = newImages.map(image => createProductImage({
             productId: id,
             imageId: image.id,
@@ -161,9 +161,13 @@ export const getPaginatedProducts = async (
 ) => {
     const where: any = {}
 
-    // if (filters.categoryId != null) {
-    //     where.categoryId = filters.categoryId
-    // }
+    if (filters.categoryId != null) {
+        where.categories = {
+            some: {
+                id: filters.categoryId,
+            },
+        }
+    }
 
     if (filters.storeId != null) {
         where.storeId = filters.storeId

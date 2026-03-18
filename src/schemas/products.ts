@@ -8,6 +8,7 @@ export const ProductCreateRequest = z.object({
     price: z.number().min(0),
     size: z.number().min(0),
     quantity: z.number().min(0),
+    weight: z.number().min(0).default(0),
     image: z.string().optional().nullable(),
 })
 
@@ -19,4 +20,5 @@ export const ProductUpdateRequest = z.object({
     price: z.number().min(0),
     size: z.number().min(0),
     quantity: z.number().min(0),
+    weight: z.number().min(0).default(0),
 })

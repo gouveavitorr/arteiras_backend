@@ -2,7 +2,6 @@ import { app } from "../../server";
 
 export interface SellerFormInterface {
     name: string,
-    cpf: string,
     phoneNumber: string,
 }
 

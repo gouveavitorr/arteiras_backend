@@ -33,6 +33,7 @@
     AUTH_SECRET="senha utilizada no JWT"
     PORT="A porta para a API"
     HOST="O host para a API"
+    TRUSTED_PROXIES="Hosts que podem utilizar a API"
 
 ```
 

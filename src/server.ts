@@ -84,7 +84,7 @@ const start = async () => {
 start();
 
 process.on('uncaughtException', function(error) {
-  app.log.fatal('received uncaught exception, shutting down', { error })
+  app.log.fatal({ error }, 'received uncaught exception, shutting down')
   app.close(() => {
     process.exit(0);
   });

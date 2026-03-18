@@ -3,16 +3,16 @@ import { app } from "../../server";
 export interface StoreFormInterface {
     name: string,
     description: string,
-    image?: string | null, 
+    image?: string | null,
     sellerId: string,
-    phoneNumber: string,
-    instagramId: string,
-    facebookId: string,
+    phoneNumber: string | null,
+    instagramId: string | null,
+    facebookId: string | null,
 }
 
 export interface StoreUpdateControl {
     storeData: StoreFormInterface;
-    existingImage: string | null; 
+    existingImage: string | null;
     newImage?: any;
 }
 
@@ -71,7 +71,7 @@ export const getStore = async (storeId: string) => {
                     categories: true
                 }
             },
-            
+
         }
     })
     if (!store) {
@@ -95,9 +95,9 @@ export const createStore = async (data: StoreFormInterface) => {
 }
 
 export const updateStore = async (id: string, control: StoreUpdateControl) => {
-    
+
     const { image, existingImages, sellerId, ...restOfStoreData } = control.storeData as any;
-    
+
     const existingRelations = await app.prisma.storeImage.findMany({
         where: { storeId: id },
         include: { image: true },
@@ -111,7 +111,7 @@ export const updateStore = async (id: string, control: StoreUpdateControl) => {
             await app.prisma.storeImage.deleteMany({
                 where: { storeId: id },
             });
-            
+
             for (const relation of existingRelations) {
                 await app.prisma.image.delete({
                     where: { id: relation.imageId }
@@ -124,15 +124,15 @@ export const updateStore = async (id: string, control: StoreUpdateControl) => {
         const { createStoreImage } = (await import('./images.usecases'));
         await createStoreImage({
             storeId: id,
-            imageId: control.newImage.id, 
+            imageId: control.newImage.id,
         });
     }
 
     const store = await app.prisma.store.update({
         data: {
             ...restOfStoreData,
-            seller: { 
-                connect: { id: sellerId } 
+            seller: {
+                connect: { id: sellerId }
             }
         },
         where: {
